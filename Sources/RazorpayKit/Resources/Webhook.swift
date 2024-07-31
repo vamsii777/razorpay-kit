@@ -26,11 +26,9 @@ public protocol WebhookRoutes: RazorpayAPIRoute {
 public struct RazorpayWebhookRoutes: WebhookRoutes {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
-    private let baseUrl: String
 
-    init(client: RazorpayAPIHandler, baseUrl: String) {
+    init(client: RazorpayAPIHandler) {
         self.client = client
-        self.baseUrl = baseUrl
     }
     
     public func create(accountId: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {

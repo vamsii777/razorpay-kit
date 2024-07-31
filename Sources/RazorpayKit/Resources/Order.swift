@@ -49,11 +49,9 @@ public protocol OrderRoutes: RazorpayAPIRoute {
 public struct RazorpayOrderRoutes: OrderRoutes {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
-    private let baseUrl: String
 
-    init(client: RazorpayAPIHandler, baseUrl: String) {
+    init(client: RazorpayAPIHandler) {
         self.client = client
-        self.baseUrl = baseUrl
     }
     
     // Fetches multiple orders for the given query parameters.

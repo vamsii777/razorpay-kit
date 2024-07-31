@@ -24,31 +24,31 @@ public final class RazorpayClient {
     public var transfer: RazorpayTransferRoutes
     public var virtualAccount: RazorpayVirtualAccountRoutes
     public var webhook: RazorpayWebhookRoutes
-    
+
     var handler: RazorpayAPIHandler
     
-    public init(httpClient: HTTPClient, key: String, secret: String, environment: Environment) {
-        self.handler = RazorpayAPIHandler(httpClient: httpClient, key: key, secret: secret, environment: environment)
-        account = RazorpayAccountRoutes(client: handler, baseUrl: environment.baseUrl)
-        addon = RazorpayAddonRoutes(client: handler, baseUrl: environment.baseUrl)
-        card = RazorpayCardRoutes(client: handler, baseUrl: environment.baseUrl)
-        customer = RazorpayCustomerRoutes(client: handler, baseUrl: environment.baseUrl)
-        fundAccount = RazorpayFundAccountRoutes(client: handler, baseUrl: environment.baseUrl)
-        iin = RazorpayIINRoutes(client: handler, baseUrl: environment.baseUrl)
-        invoice = RazorpayInvoiceRoutes(client: handler, baseUrl: environment.baseUrl)
-        item = RazorpayItemRoutes(client: handler, baseUrl: environment.baseUrl)
-        order = RazorpayOrderRoutes(client: handler, baseUrl: environment.baseUrl)
-        payment = RazorpayPaymentRoutes(client: handler, baseUrl: environment.baseUrl)
-        paymentLink = RazorpayPaymentLinkRoutes(client: handler, baseUrl: environment.baseUrl)
-        product = RazorpayProductRoutes(client: handler, baseUrl: environment.baseUrl)
-        qrCode = RazorpayQRCodeRoutes(client: handler, baseUrl: environment.baseUrl)
-        refund = RazorpayRefundRoutes(client: handler, baseUrl: environment.baseUrl)
-        settlement = RazorpaySettlementRoutes(client: handler, baseUrl: environment.baseUrl)
-        stakeholder = RazorpayStakeholderRoutes(client: handler, baseUrl: environment.baseUrl)
-        subscription = RazorpaySubscriptionRoutes(client: handler, baseUrl: environment.baseUrl)
-        token = RazorpayTokenRoutes(client: handler, baseUrl: environment.baseUrl)
-        transfer = RazorpayTransferRoutes(client: handler, baseUrl: environment.baseUrl)
-        virtualAccount = RazorpayVirtualAccountRoutes(client: handler, baseUrl: environment.baseUrl)
-        webhook = RazorpayWebhookRoutes(client: handler, baseUrl: environment.baseUrl)
+    public init(httpClient: HTTPClient, key: String, secret: String) {
+        self.handler = RazorpayAPIHandler(httpClient: httpClient, key: key, secret: secret)
+        account = RazorpayAccountRoutes(client: handler)
+        addon = RazorpayAddonRoutes(client: handler)
+        card = RazorpayCardRoutes(client: handler)
+        customer = RazorpayCustomerRoutes(client: handler)
+        fundAccount = RazorpayFundAccountRoutes(client: handler)
+        iin = RazorpayIINRoutes(client: handler)
+        invoice = RazorpayInvoiceRoutes(client: handler)
+        item = RazorpayItemRoutes(client: handler)
+        order = RazorpayOrderRoutes(client: handler)
+        payment = RazorpayPaymentRoutes(client: handler)
+        paymentLink = RazorpayPaymentLinkRoutes(client: handler)
+        product = RazorpayProductRoutes(client: handler)
+        qrCode = RazorpayQRCodeRoutes(client: handler)
+        refund = RazorpayRefundRoutes(client: handler)
+        settlement = RazorpaySettlementRoutes(client: handler)
+        stakeholder = RazorpayStakeholderRoutes(client: handler)
+        subscription = RazorpaySubscriptionRoutes(client: handler)
+        token = RazorpayTokenRoutes(client: handler)
+        transfer = RazorpayTransferRoutes(client: handler)
+        virtualAccount = RazorpayVirtualAccountRoutes(client: handler)
+        webhook = RazorpayWebhookRoutes(client: handler)
     }
 }

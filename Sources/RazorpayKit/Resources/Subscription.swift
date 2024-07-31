@@ -44,11 +44,9 @@ public protocol SubscriptionRoutes: RazorpayAPIRoute {
 public struct RazorpaySubscriptionRoutes: SubscriptionRoutes {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
-    private let baseUrl: String
 
-    init(client: RazorpayAPIHandler, baseUrl: String) {
+    init(client: RazorpayAPIHandler) {
         self.client = client
-        self.baseUrl = baseUrl
     }
     
     public func all(queryParams: [String: String]? = nil, extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
