@@ -4,20 +4,6 @@ import NIOFoundationCompat
 import NIOHTTP1
 import AsyncHTTPClient
 
-public enum Environment {
-    case production
-    case sandbox
-    
-    var baseUrl: String {
-        switch self {
-        case .production:
-            return APIConstants.baseURL
-        case .sandbox:
-            return APIConstants.baseURL
-        }
-    }
-}
-
 extension HTTPClientRequest.Body {
     public static func string(_ string: String) -> Self {
         .bytes(.init(string: string))
@@ -34,15 +20,13 @@ extension HTTPClientRequest.Body {
 
 struct RazorpayAPIHandler {
     private let httpClient: HTTPClient
-    private let environment: Environment
     private let key: String
     private let secret: String
     
-    public init(httpClient: HTTPClient, key: String, secret: String, environment: Environment) {
+    public init(httpClient: HTTPClient, key: String, secret: String) {
         self.httpClient = httpClient
         self.key = key
         self.secret = secret
-        self.environment = environment
     }
     
     private func authorizationHeader() -> String {
@@ -57,7 +41,7 @@ struct RazorpayAPIHandler {
                             headers: HTTPHeaders) async throws -> HTTPClientResponse {
         
         let queryString = RZPRUTL.convertToQueryString(queryParams)
-        let url = environment.baseUrl + path + queryString
+        let url = APIConstants.baseURL + path + queryString
         
         var requestHeaders: HTTPHeaders = ["Authorization": authorizationHeader(), "Content-Type": "application/json",
                                            "Accept": "application/json"]

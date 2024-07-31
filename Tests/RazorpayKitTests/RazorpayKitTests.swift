@@ -11,7 +11,7 @@ final class RazorpayKitTests: XCTestCase {
     override func setUp() {
         super.setUp()
         httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
-        razorpayClient = RazorpayClient(httpClient: httpClient, key: "RAZORPAY_KEY", secret: "RAZORPAY_SECRET", environment: .sandbox)
+        razorpayClient = RazorpayClient(httpClient: httpClient, key: "RAZORPAY_KEY", secret: "RAZORPAY_SECRET")
     }
     
     func testThatOrdersAreFetchedWithPayments() async throws {

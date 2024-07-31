@@ -23,11 +23,9 @@ public protocol ProductRoutes: RazorpayAPIRoute {
 public struct RazorpayProductRoutes: ProductRoutes {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
-    private let baseUrl: String
 
-    init(client: RazorpayAPIHandler, baseUrl: String) {
+    init(client: RazorpayAPIHandler) {
         self.client = client
-        self.baseUrl = baseUrl
     }
     
     public func requestProductConfiguration(accountId: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
