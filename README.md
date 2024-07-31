@@ -1,6 +1,6 @@
 # RazorpayKit
-![](https://img.shields.io/badge/Swift-5.9-green.svg?style=svg)
-![](https://img.shields.io/badge/SwiftNio-2-orange.svg?style=svg)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fvamsii777%2Frazorpay-kit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/vamsii777/razorpay-kit)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fvamsii777%2Frazorpay-kit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/vamsii777/razorpay-kit)
 
 RazorpayKit is a Swift library for integrating with Razorpay's payment gateway. It supports managing orders, payments, subscriptions, webhooks and more.
 
@@ -12,7 +12,7 @@ You can add RazorpayKit to your project via Swift Package Manager (SPM) by addin
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/vamsii777/RazorpayKit.git", from: "0.0.8")
+    .package(url: "https://github.com/vamsii777/razorpay-kit.git", from: "0.0.9")
 ]
 ```
 
@@ -24,7 +24,7 @@ Initialize the `RazorpayClient` with your Razorpay API key, secret, and environm
 
 ```swift
 let httpClient = HTTPClient(...)
-let razorpay = RazorpayClient(httpClient: httpClient, key: "rzp_test_12345", secret: "your_secret", environment: .production)
+let razorpay = RazorpayClient(httpClient: httpClient, key: "rzp_test_12345", secret: "your_secret")
 ```
 
 And now you have access to the APIs via `razorpay`.
