@@ -5,9 +5,9 @@ let package = Package(
     name: "razorpay-kit",
     platforms: [
         .macOS(.v13),
-        .iOS(.v16),
-        .watchOS(.v9),
-        .tvOS(.v16),
+        .iOS(.v15),
+        .watchOS(.v8),
+        .tvOS(.v15),
         .visionOS(.v1)  
     ],
     products: [
