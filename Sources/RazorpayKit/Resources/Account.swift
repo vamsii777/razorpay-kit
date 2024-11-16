@@ -63,8 +63,8 @@ public struct RazorpayAccountRoutes: AccountRoutes {
     
     @available(*, deprecated, message: "This function is under development and cannot be used.")
     public func uploadAccountDoc(accountId: String, params: FileUploadParams, extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
-        let url = "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)/documents"
-        fatalError("File upload functionality needs custom implementation based on your app's needs.")
+        _ = "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)/documents"
+        fatalError("File upload not yet implemented")
     }
 
     public func fetchAccountDoc(accountId: String, queryParams: [String: String]? = nil, extraHeaders: [String: String]? = nil) async throws -> [String: Any] {

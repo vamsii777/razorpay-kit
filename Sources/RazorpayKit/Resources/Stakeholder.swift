@@ -62,9 +62,8 @@ public struct RazorpayStakeholderRoutes: StakeholderRoutes {
 
     @available(*, deprecated, message: "This function is under development and cannot be used.")
     public func uploadStakeholderDoc(accountId: String, stakeholderId: String, params: FileUploadParams, extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
-        let url = "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)/stakeholders/\(stakeholderId)/documents"
-        // This method needs to be implemented based on your specific file upload handling in Swift.
-        fatalError("File upload functionality needs custom implementation based on your app's needs.")
+        _ = "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)/stakeholders/\(stakeholderId)/documents"
+        fatalError("File upload not yet implemented")
     }
 
     public func fetchStakeholderDoc(accountId: String, stakeholderId: String, queryParams: [String: String]? = nil, extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
