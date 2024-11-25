@@ -12,7 +12,7 @@ You can add RazorpayKit to your project via Swift Package Manager (SPM) by addin
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/vamsii777/razorpay-kit.git", from: "0.0.9")
+    .package(url: "https://github.com/vamsii777/razorpay-kit.git", from: "0.0.11")
 ]
 ```
 
