@@ -4,6 +4,7 @@ import NIOFoundationCompat
 import NIOHTTP1
 import AsyncHTTPClient
 
+
 extension HTTPClientRequest.Body {
     public static func string(_ string: String) -> Self {
         .bytes(.init(string: string))
@@ -43,8 +44,11 @@ struct RazorpayAPIHandler {
         let queryString = RZPRUTL.convertToQueryString(queryParams)
         let url = APIConstants.baseURL + path + queryString
         
-        var requestHeaders: HTTPHeaders = ["Authorization": authorizationHeader(), "Content-Type": "application/json",
-                                           "Accept": "application/json"]
+        var requestHeaders: HTTPHeaders = [
+            "Authorization": authorizationHeader(),
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        ]
         headers.forEach { requestHeaders.add(name: $0.name, value: $0.value) }
 
         var request = HTTPClientRequest(url: url)
