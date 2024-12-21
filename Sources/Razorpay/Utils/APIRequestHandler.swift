@@ -10,7 +10,6 @@ internal enum APIRequestHandler {
     ) async throws -> T where T: RazorpayResponse {
         do {
             let response = try await operation()
-            print("📦 Razorpay API Response:", response)
             
             // If response is an error response, throw it directly
             if let errorDict = response["error"] as? [String: Any] {
@@ -34,7 +33,7 @@ internal enum APIRequestHandler {
                     field: field,
                     metadata: metadata
                 )
-                
+
                 throw RazorpayError.apiError(error)
             }
             
@@ -42,7 +41,7 @@ internal enum APIRequestHandler {
         } catch let error as RazorpayError {
             throw error
         } catch {
-            throw RazorpayError.invalidResponse(error)
+            throw RazorpayError.invalidResponse(error.localizedDescription)
         }
     }
     
