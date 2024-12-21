@@ -1,7 +1,7 @@
 import Foundation
 import NIOHTTP1
 
-public protocol RazorpayAPIRoute {
+public protocol RazorpayAPIRoute: Sendable {
     var headers: HTTPHeaders { get set }
     
     /// Headers to send with the request.

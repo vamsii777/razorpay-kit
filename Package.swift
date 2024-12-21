@@ -10,7 +10,8 @@ let package = Package(
         .watchOS(.v8),
     ],
     products: [
-        .library(name: "RazorpayKit", targets: ["RazorpayKit"])
+        .library(name: "RazorpayKit", targets: ["RazorpayKit"]),
+        .library(name: "Razorpay", targets: ["Razorpay"])
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.1.0"),
@@ -22,6 +23,10 @@ let package = Package(
             ],
             swiftSettings: swiftSettings
         ),
+        .target(name: "Razorpay", 
+            dependencies: ["RazorpayKit"],
+            swiftSettings: swiftSettings
+        ),  
         .testTarget(
             name: "RazorpayKitTests",
             dependencies: ["RazorpayKit"],
