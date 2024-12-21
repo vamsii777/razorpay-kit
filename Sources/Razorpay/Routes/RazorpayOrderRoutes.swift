@@ -18,35 +18,25 @@ import NIOHTTP1
 /// - ``create(amount:currency:receipt:notes:partialPayment:firstPaymentMinAmount:)``
 public protocol RazorpayOrderRoutes: Sendable {
     /// Creates a new order with the specified parameters
-    ///
-    /// Creates a new order in Razorpay that can be used to accept payments from customers.
-    ///
-    /// ```swift
-    /// let order = try await razorpay.orders.create(
-    ///     amount: 10000, // ₹100.00
-    ///     currency: "INR",
-    ///     receipt: "order_123",
-    ///     notes: ["customer_name": "John Doe"]
-    /// )
-    /// ```
-    ///
+    /// - Parameter request: The order creation request
+    /// - Returns: The created order
+    /// - Throws: ``RazorpayError`` if the request fails or response is invalid
+    func create(_ request: OrderRequest) async throws -> OrderResponse
+    
+    /// Convenience method to create an order with basic parameters
     /// - Parameters:
     ///   - amount: Payment amount in smallest currency sub-unit (e.g., paise for INR)
     ///   - currency: ISO currency code (e.g., "INR")
     ///   - receipt: Optional unique receipt number for your reference
     ///   - notes: Optional key-value pairs for additional information
-    ///   - partialPayment: Optional flag to allow partial payments
-    ///   - firstPaymentMinAmount: Optional minimum amount for first partial payment
     /// - Returns: The created order
     /// - Throws: ``RazorpayError`` if the request fails or response is invalid
     func create(
         amount: Int,
         currency: String,
         receipt: String?,
-        notes: [String: String]?,
-        partialPayment: Bool?,
-        firstPaymentMinAmount: Int?
-    ) async throws -> RazorpayOrder
+        notes: [String: String]?
+    ) async throws -> OrderResponse
 }
 
 /// Implementation of RazorpayOrderRoutes using RazorpayKit
@@ -66,45 +56,30 @@ public struct RazorpayKitOrderRoutes: RazorpayOrderRoutes {
         self.client = client
     }
     
-    public func create(
-        amount: Int,
-        currency: String,
-        receipt: String? = nil,
-        notes: [String: String]? = nil,
-        partialPayment: Bool? = nil,
-        firstPaymentMinAmount: Int? = nil
-    ) async throws -> RazorpayOrder {
-        
+    public func create(_ request: OrderRequest) async throws -> OrderResponse {
         try APIRequestHandler.validateMinimum(
-            amount,
+            request.amount,
             minimum: 100,
             field: "amount",
             message: "The amount must be at least 100 (₹1.00 for INR)"
         )
         
-        // Build request data
-        var data: [String: Any] = [
-            "amount": amount,
-            "currency": currency
-        ]
-        
-        // Add optional parameters if provided
-        if let receipt = receipt {
-            data["receipt"] = receipt
-        }
-        if let notes = notes {
-            data["notes"] = notes
-        }
-        if let partialPayment = partialPayment {
-            data["partial_payment"] = partialPayment
-        }
-        if let firstPaymentMinAmount = firstPaymentMinAmount {
-            data["first_payment_min_amount"] = firstPaymentMinAmount
-        }
-        
-        // Execute request with common error handling
         return try await APIRequestHandler.execute {
-            try await client.order.create(data: data)
+            try await client.order.create(data: request.dictionary)
         }
+    }
+    
+    public func create(
+        amount: Int,
+        currency: String,
+        receipt: String? = nil,
+        notes: [String: String]? = nil
+    ) async throws -> OrderResponse {
+        try await create(OrderRequest(
+            amount: amount,
+            currency: currency,
+            receipt: receipt,
+            notes: notes
+        ))
     }
 }

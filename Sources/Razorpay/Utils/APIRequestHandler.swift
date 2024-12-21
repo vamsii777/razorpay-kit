@@ -55,9 +55,22 @@ internal enum APIRequestHandler {
 }
 
 /// Protocol for Razorpay API response models
-public protocol RazorpayResponse {
-    /// Initialize from raw API response
+public protocol RazorpayResponse: Codable {
+    /// Initialize from raw API response dictionary
+    /// - Parameter response: Dictionary containing the API response data
+    /// - Throws: RazorpayError if the response is invalid or cannot be parsed
     init(response: [String: Any]) throws
+}
+
+/// Default implementation for RazorpayResponse
+public extension RazorpayResponse {
+    /// Default implementation that converts dictionary to JSON and uses Codable
+    init(response: [String: Any]) throws {
+        let data = try JSONSerialization.data(withJSONObject: response)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970 // Handle Unix timestamps
+        self = try decoder.decode(Self.self, from: data)
+    }
 }
 
 /// Structure to represent Razorpay API error responses in a Sendable way

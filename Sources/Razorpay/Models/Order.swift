@@ -1,6 +1,74 @@
 import Foundation
 
-public struct RazorpayOrder: Sendable, RazorpayResponse {
+/// Represents a request to create a new Razorpay order
+public struct OrderRequest: Codable, Sendable {
+    /// Payment amount in smallest currency sub-unit (e.g., paise for INR)
+    public let amount: Int
+    
+    /// ISO currency code (e.g., "INR")
+    public let currency: String
+    
+    /// Optional unique receipt number for your reference
+    public let receipt: String?
+    
+    /// Optional key-value pairs for additional information
+    public let notes: [String: String]?
+    
+    /// Optional flag to allow partial payments
+    public let partialPayment: Bool?
+    
+    /// Optional minimum amount for first partial payment
+    public let firstPaymentMinAmount: Int?
+    
+    /// Creates a new order request
+    /// - Parameters:
+    ///   - amount: Payment amount in smallest currency sub-unit (e.g., paise for INR)
+    ///   - currency: ISO currency code (e.g., "INR")
+    ///   - receipt: Optional unique receipt number for your reference
+    ///   - notes: Optional key-value pairs for additional information
+    ///   - partialPayment: Optional flag to allow partial payments
+    ///   - firstPaymentMinAmount: Optional minimum amount for first partial payment
+    public init(
+        amount: Int,
+        currency: String,
+        receipt: String? = nil,
+        notes: [String: String]? = nil,
+        partialPayment: Bool? = nil,
+        firstPaymentMinAmount: Int? = nil
+    ) {
+        self.amount = amount
+        self.currency = currency
+        self.receipt = receipt
+        self.notes = notes
+        self.partialPayment = partialPayment
+        self.firstPaymentMinAmount = firstPaymentMinAmount
+    }
+    
+    /// Converts the request to a dictionary format for API submission
+    internal var dictionary: [String: Any] {
+        var data: [String: Any] = [
+            "amount": amount,
+            "currency": currency
+        ]
+        
+        if let receipt = receipt {
+            data["receipt"] = receipt
+        }
+        if let notes = notes {
+            data["notes"] = notes
+        }
+        if let partialPayment = partialPayment {
+            data["partial_payment"] = partialPayment
+        }
+        if let firstPaymentMinAmount = firstPaymentMinAmount {
+            data["first_payment_min_amount"] = firstPaymentMinAmount
+        }
+        
+        return data
+    }
+}
+
+public struct OrderResponse: RazorpayResponse, Sendable {
     /// The unique identifier of the order
     public let id: String
     
@@ -31,7 +99,7 @@ public struct RazorpayOrder: Sendable, RazorpayResponse {
     /// Unix timestamp of when the order was created
     public let createdAt: Date
     
-    public enum Status: String, Sendable {
+    public enum Status: String, Sendable, Codable {
         /// Order is created but no payment attempted
         case created
         /// Payment has been attempted on this order
@@ -40,42 +108,17 @@ public struct RazorpayOrder: Sendable, RazorpayResponse {
         case paid
     }
     
-    public init(response: [String: Any]) throws {
-        guard let id = response["id"] as? String else {
-            throw RazorpayError.invalidResponse("Missing or invalid 'id' in order response")
-        }
-        guard let amount = response["amount"] as? Int else {
-            throw RazorpayError.invalidResponse("Missing or invalid 'amount' in order response")
-        }
-        guard let amountPaid = response["amount_paid"] as? Int else {
-            throw RazorpayError.invalidResponse("Missing or invalid 'amount_paid' in order response")
-        }
-        guard let amountDue = response["amount_due"] as? Int else {
-            throw RazorpayError.invalidResponse("Missing or invalid 'amount_due' in order response")
-        }
-        guard let currency = response["currency"] as? String else {
-            throw RazorpayError.invalidResponse("Missing or invalid 'currency' in order response")
-        }
-        guard let statusString = response["status"] as? String,
-              let status = Status(rawValue: statusString) else {
-            throw RazorpayError.invalidResponse("Missing or invalid 'status' in order response")
-        }
-        guard let attempts = response["attempts"] as? Int else {
-            throw RazorpayError.invalidResponse("Missing or invalid 'attempts' in order response")
-        }
-        guard let createdAtTimestamp = response["created_at"] as? Int else {
-            throw RazorpayError.invalidResponse("Missing or invalid 'created_at' in order response")
-        }
-        
-        self.id = id
-        self.amount = amount
-        self.amountPaid = amountPaid
-        self.amountDue = amountDue
-        self.currency = currency
-        self.receipt = response["receipt"] as? String
-        self.status = status
-        self.attempts = attempts
-        self.notes = (response["notes"] as? [String: String]) ?? [:]
-        self.createdAt = Date(timeIntervalSince1970: TimeInterval(createdAtTimestamp))
+    // Add CodingKeys to handle snake_case to camelCase conversion
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case amount
+        case amountPaid = "amount_paid"
+        case amountDue = "amount_due"
+        case currency
+        case receipt
+        case status
+        case attempts
+        case notes
+        case createdAt = "created_at"
     }
 } 
