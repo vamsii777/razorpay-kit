@@ -14,8 +14,6 @@ internal enum APIRequestHandler {
             
             // If response is an error response, throw it directly
             if let errorDict = response["error"] as? [String: Any] {
-                print("❌ Razorpay API Error:", errorDict)
-                
                 // Create APIError manually to avoid decoding issues
                 let code = (errorDict["code"] as? String).flatMap { 
                     RazorpayError.APIError.ErrorCode(rawValue: $0) 
@@ -44,8 +42,7 @@ internal enum APIRequestHandler {
         } catch let error as RazorpayError {
             throw error
         } catch {
-            print("⚠️ Unexpected Error:", error)
-            throw RazorpayError.invalidResponse(error.localizedDescription)
+            throw RazorpayError.invalidResponse(error)
         }
     }
     
