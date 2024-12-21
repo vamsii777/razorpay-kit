@@ -32,6 +32,11 @@ let package = Package(
             dependencies: ["RazorpayKit"],
             swiftSettings: swiftSettings
         ),
+        .testTarget(
+            name: "RazorpayTests",
+            dependencies: ["RazorpayKit", "Razorpay"],
+            swiftSettings: swiftSettings
+        ),
     ]
 )
 

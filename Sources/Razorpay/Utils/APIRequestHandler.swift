@@ -10,27 +10,41 @@ internal enum APIRequestHandler {
     ) async throws -> T where T: RazorpayResponse {
         do {
             let response = try await operation()
+            print("📦 Razorpay API Response:", response)
+            
+            // If response is an error response, throw it directly
+            if let errorDict = response["error"] as? [String: Any] {
+                print("❌ Razorpay API Error:", errorDict)
+                
+                // Create APIError manually to avoid decoding issues
+                let code = (errorDict["code"] as? String).flatMap { 
+                    RazorpayError.APIError.ErrorCode(rawValue: $0) 
+                } ?? .unknown
+                let description = errorDict["description"] as? String ?? "Unknown error"
+                let source = errorDict["source"] as? String ?? "business"
+                let step = errorDict["step"] as? String ?? "payment_initiation"
+                let reason = errorDict["reason"] as? String ?? "unknown"
+                let field = errorDict["field"] as? String
+                let metadata = (errorDict["metadata"] as? [String: Any])?.compactMapValues { "\($0)" } ?? [:]
+                
+                let error = RazorpayError.APIError(
+                    code: code,
+                    description: description,
+                    source: source,
+                    step: step,
+                    reason: reason,
+                    field: field,
+                    metadata: metadata
+                )
+                
+                throw RazorpayError.apiError(error)
+            }
+            
             return try T(response: response)
         } catch let error as RazorpayError {
             throw error
         } catch {
-            // Handle RazorpayKit error responses
-            if let razorpayError = error as? RazorpayKitError,
-               case .apiError(let errorResponse) = razorpayError {
-                // Convert to a sendable dictionary type
-                let response: [String: Any] = [
-                    "error": [
-                        "code": errorResponse.code,
-                        "description": errorResponse.description,
-                        "source": errorResponse.source,
-                        "step": errorResponse.step,
-                        "reason": errorResponse.reason,
-                        "field": errorResponse.field as Any,
-                        "metadata": errorResponse.metadata
-                    ]
-                ]
-                throw RazorpayError.apiError(try .init(response: response))
-            }
+            print("⚠️ Unexpected Error:", error)
             throw RazorpayError.invalidResponse(error.localizedDescription)
         }
     }

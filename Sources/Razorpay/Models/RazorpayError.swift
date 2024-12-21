@@ -30,31 +30,31 @@ public enum RazorpayError: LocalizedError {
     /// - Reason for the error
     /// - Optional field that caused the error
     /// - Additional metadata
-    public struct APIError: Sendable {
+    public struct APIError: Sendable, Codable {
         /// The type of error that occurred
-        public let code: ErrorCode
+        public let code: ErrorCode?
         
         /// Detailed description of the error
         public let description: String
         
         /// Source of the error (e.g. "business")
-        public let source: String
+        public let source: String?
         
         /// Step where error occurred (e.g. "payment_initiation")
-        public let step: String
+        public let step: String?
         
         /// Reason for the error (e.g. "input_validation_failed")
-        public let reason: String
+        public let reason: String?
         
         /// Optional field that caused the error
         public let field: String?
         
         /// Additional metadata about the error
-        public let metadata: [String: String]
+        public let metadata: [String: String]?
         
         /// Represents different types of API error codes
         @frozen
-        public enum ErrorCode: String, Sendable {
+        public enum ErrorCode: String, Sendable, Codable {
             /// Error due to invalid request parameters
             case badRequestError = "BAD_REQUEST_ERROR"
             
@@ -78,14 +78,24 @@ public enum RazorpayError: LocalizedError {
             }
         }
         
-        init(
-            code: ErrorCode,
+        private enum CodingKeys: String, CodingKey {
+            case code
+            case description
+            case source
+            case step
+            case reason
+            case field
+            case metadata
+        }
+        
+        public init(
+            code: ErrorCode? = nil,
             description: String,
-            source: String = "business",
-            step: String = "payment_initiation",
-            reason: String = "input_validation_failed",
+            source: String? = "business",
+            step: String? = "payment_initiation",
+            reason: String? = "input_validation_failed",
             field: String? = nil,
-            metadata: [String: String] = [:]
+            metadata: [String: String]? = nil
         ) {
             self.code = code
             self.description = description
@@ -126,11 +136,11 @@ public enum RazorpayError: LocalizedError {
         case .invalidResponse(let message):
             return "Invalid response: \(message)"
         case .apiError(let error):
-            var description = "[\(error.code.rawValue)] \(error.description)"
+            var description = "[\(error.code?.rawValue ?? "unknown")] \(error.description)"
             if let field = error.field {
                 description += " (Field: \(field))"
             }
-            description += " - \(error.reason)"
+            description += " - \(error.reason ?? "unknown")"
             return description
         }
     }

@@ -121,4 +121,34 @@ public struct OrderResponse: RazorpayResponse, Sendable {
         case notes
         case createdAt = "created_at"
     }
+
+    public init(id: String, amount: Int, amountPaid: Int, amountDue: Int, currency: String, receipt: String?, status: Status, attempts: Int, notes: [String: String], createdAt: Date) {
+        self.id = id
+        self.amount = amount
+        self.amountPaid = amountPaid
+        self.amountDue = amountDue
+        self.currency = currency
+        self.receipt = receipt
+        self.status = status
+        self.attempts = attempts
+        self.notes = notes
+        self.createdAt = createdAt
+    }
+
+    public init(response: [String: Any]) throws {
+        let data = try JSONSerialization.data(withJSONObject: response)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        
+        // Handle empty notes array by converting to empty dictionary
+        if let notesArray = response["notes"] as? [Any], notesArray.isEmpty {
+            var mutableResponse = response
+            mutableResponse["notes"] = [String: String]()
+            let updatedData = try JSONSerialization.data(withJSONObject: mutableResponse)
+            self = try decoder.decode(OrderResponse.self, from: updatedData)
+            return
+        }
+        
+        self = try decoder.decode(OrderResponse.self, from: data)
+    }
 } 
