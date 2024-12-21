@@ -28,17 +28,22 @@ import Foundation
 /// ### Available Services
 /// - ``orders``
 /// - ``razorpayClient``
+/// - ``payments``
 public actor Razorpay {
     /// The underlying RazorpayKit client used for API requests
     public let razorpayClient: RazorpayClient
 
     /// Routes for interacting with Razorpay orders
     public let orders: any RazorpayOrderRoutes
+    
+    /// Routes for interacting with Razorpay payments
+    public let payments: any RazorpayPaymentRoutes
 
     /// Creates a new Razorpay client
     /// - Parameter razorpayClient: The RazorpayKit client to use for API requests
     public init(_ razorpayClient: RazorpayClient) {
         self.razorpayClient = razorpayClient
         self.orders = RazorpayKitOrderRoutes(client: razorpayClient)
+        self.payments = RazorpayKitPaymentRoutes(client: razorpayClient)
     }
 }

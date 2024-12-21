@@ -161,4 +161,13 @@ public enum RazorpayError: LocalizedError {
         }
         return false
     }
+
+    public var isValidPaymentId: Bool {
+         if case .apiError(let error) = self {
+            return error.code == .badRequestError && 
+                   error.field == "id" &&
+                   error.reason == "input_validation_failed"
+        }
+        return false
+    }
 } 
