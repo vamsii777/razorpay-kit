@@ -20,7 +20,6 @@ let package = Package(
             dependencies: [
                 .product(name: "AsyncHTTPClient", package: "async-http-client")
             ],
-            exclude: ["Documentation.docc"],
             swiftSettings: swiftSettings
         ),
         .testTarget(

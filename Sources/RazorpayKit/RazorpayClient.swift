@@ -47,7 +47,7 @@ import AsyncHTTPClient
 /// - ``iin``
 /// - ``qrCode``
 /// - ``webhook``
-public final class RazorpayClient {
+public actor RazorpayClient {
     
     /// Routes for managing Razorpay accounts
     public var account: RazorpayAccountRoutes
