@@ -1,6 +1,7 @@
 import RazorpayKit
 import AsyncHTTPClient
 import Foundation
+import Vapor
 
 /// A client for interacting with the Razorpay API
 ///
@@ -31,7 +32,7 @@ import Foundation
 /// - ``payments``
 public actor Razorpay {
     /// The underlying RazorpayKit client used for API requests
-    public let razorpayClient: RazorpayClient
+    public let client: RazorpayClient
 
     /// Routes for interacting with Razorpay orders
     public let orders: any RazorpayOrderRoutes
@@ -42,8 +43,19 @@ public actor Razorpay {
     /// Creates a new Razorpay client
     /// - Parameter razorpayClient: The RazorpayKit client to use for API requests
     public init(_ razorpayClient: RazorpayClient) {
-        self.razorpayClient = razorpayClient
+        self.client = razorpayClient
         self.orders = RazorpayKitOrderRoutes(client: razorpayClient)
         self.payments = RazorpayKitPaymentRoutes(client: razorpayClient)
+    }
+}
+
+extension Razorpay {
+    public init(key: String, secret: String, httpClient: HTTPClient) {
+        let razorpayClient = RazorpayClient(httpClient: httpClient, key: key, secret: secret)
+        self.init(razorpayClient)
+    }
+
+    public init(key: String, secret: String, application: Application) {
+        self.init(key: key, secret: secret, httpClient: application.http.client.shared)
     }
 }

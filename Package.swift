@@ -15,6 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.1.0"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.112.1")
     ],
     targets: [
         .target(name: "RazorpayKit", 
@@ -24,7 +25,10 @@ let package = Package(
             swiftSettings: swiftSettings
         ),
         .target(name: "Razorpay", 
-            dependencies: ["RazorpayKit"],
+            dependencies: [
+                "RazorpayKit",
+                .product(name: "Vapor", package: "vapor")
+            ],
             swiftSettings: swiftSettings
         ),  
         .testTarget(
