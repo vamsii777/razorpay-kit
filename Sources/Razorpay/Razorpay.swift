@@ -48,14 +48,3 @@ public actor Razorpay {
         self.payments = RazorpayKitPaymentRoutes(client: razorpayClient)
     }
 }
-
-extension Razorpay {
-    public init(key: String, secret: String, httpClient: HTTPClient) {
-        let razorpayClient = RazorpayClient(httpClient: httpClient, key: key, secret: secret)
-        self.init(razorpayClient)
-    }
-
-    public init(key: String, secret: String, application: Application) {
-        self.init(key: key, secret: secret, httpClient: application.http.client.shared)
-    }
-}
