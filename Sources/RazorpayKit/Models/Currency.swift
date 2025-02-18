@@ -1,3 +1,4 @@
+import Foundation
 /// Represents currencies supported by Razorpay for international payments
 ///
 /// This enum contains all the currencies that can be used for payments through Razorpay's payment gateway.
@@ -219,7 +220,7 @@ extension Currency {
     /// - convertToSmallestUnit(10.5) for JPY returns 10 (yen)
     /// - convertToSmallestUnit(10.5) for BHD returns 10500 (fils)
     public func convertToSmallestUnit(_ amount: Decimal) -> Int {
-        let multiplier = pow(10, exponent)
+        let multiplier = Decimal(pow(10.0, Double(exponent)))
         return NSDecimalNumber(decimal: amount * multiplier).intValue
     }
     
@@ -229,7 +230,7 @@ extension Currency {
     /// - convertFromSmallestUnit(10) for JPY returns 10.00 (yen)
     /// - convertFromSmallestUnit(10500) for BHD returns 10.500 (dinar)
     public func convertFromSmallestUnit(_ amount: Int) -> Decimal {
-        let divisor = Decimal(pow(10, exponent))
+        let divisor = Decimal(pow(10.0, Double(exponent)))
         return Decimal(amount) / divisor
     }
 }

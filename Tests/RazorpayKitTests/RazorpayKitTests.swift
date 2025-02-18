@@ -72,6 +72,13 @@ struct RazorpayKitTests {
         #expect(response["id"] as? String == paymentId, "Fetched payment ID should match the requested payment ID")
     }
 
+    @Test("Capture Payment")
+    func capturePayment() async throws {
+        let paymentId = "pay_29QQoUBi66xm2f"
+        let response = try await razorpayClient.payment.capture(paymentID: paymentId, amount: 100, currency: .indianRupee)
+        #expect(response["id"] != nil, "Captured payment should have an ID")
+    }
+
     @Test func refundPayment() async throws {
         let paymentId = "pay_29QQoUBi66xm2f"
         let refundData: [String: Any] = ["amount": 100]

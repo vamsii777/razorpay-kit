@@ -72,7 +72,7 @@ public protocol PaymentRoutes: RazorpayAPIRoute {
     ///   - extraHeaders: Optional additional headers for the request
     /// - Returns: A dictionary containing the capture response
     /// - Throws: An error if the capture fails
-    func capture(paymentID: String, amount: Int, currency: Currency, data: [String: Any], extraHeaders: [String: String]?) async throws -> [String: Any]
+    func capture(paymentID: String, amount: Int, currency: Currency, extraHeaders: [String: String]?) async throws -> [String: Any]
     
     /// Initiates a refund for a payment with the given ID and amount.
     /// - Parameters:
@@ -279,11 +279,11 @@ public struct RazorpayPaymentRoutes: PaymentRoutes {
     @available(*, deprecated, message: "Use capture(paymentID:amount:currency:data:extraHeaders:) instead")
     public func capture(paymentID: String, amount: Int, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         // Default to INR for backward compatibility
-        return try await capture(paymentID: paymentID, amount: amount, currency: .indianRupee, data: data, extraHeaders: extraHeaders)
+        return try await capture(paymentID: paymentID, amount: amount, currency: .indianRupee, extraHeaders: extraHeaders)
     }
 
-    public func capture(paymentID: String, amount: Int, currency: Currency, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
-        var captureData = data
+    public func capture(paymentID: String, amount: Int, currency: Currency, extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
+        var captureData = [String: Any]()
         captureData["amount"] = amount
         captureData["currency"] = currency.rawValue
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/\(paymentID)/capture"
