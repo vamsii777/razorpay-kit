@@ -41,7 +41,7 @@ public protocol RazorpayPaymentRoutes: Sendable {
     ///   - currency: Currency of the payment
     /// - Returns: The captured payment details
     /// - Throws: ``RazorpayError`` if the request fails or response is invalid
-    func capture(id: String, amount: Int, currency: String? = "INR") async throws -> Payment
+    func capture(id: String, amount: Int, currency: Currency) async throws -> Payment
     
     /// Fetches details of a specific payment
     /// - Parameter id: Unique identifier of the payment
@@ -76,7 +76,7 @@ public struct RazorpayKitPaymentRoutes: RazorpayPaymentRoutes {
         try await fetch(id: id, expand: [])
     }
 
-    public func capture(id: String, amount: Int, currency: String? = "INR") async throws -> Payment {
+    public func capture(id: String, amount: Int, currency: Currency) async throws -> Payment {
         return try await APIRequestHandler.execute {
             try await client.payment.capture(paymentID: id, amount: amount, currency: currency, extraHeaders: nil)
         }
