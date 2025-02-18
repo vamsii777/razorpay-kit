@@ -33,6 +33,15 @@ public enum PaymentExpansion: String {
 public protocol RazorpayPaymentRoutes: Sendable {
     /// Payment details that can be expanded
     typealias Expandable = Set<PaymentExpansion>
+
+    /// Captures a payment
+    /// - Parameters:
+    ///   - id: Unique identifier of the payment
+    ///   - amount: Amount to capture
+    ///   - currency: Currency of the payment
+    /// - Returns: The captured payment details
+    /// - Throws: ``RazorpayError`` if the request fails or response is invalid
+    func capture(id: String, amount: Int, currency: String? = "INR") async throws -> Payment
     
     /// Fetches details of a specific payment
     /// - Parameter id: Unique identifier of the payment
@@ -65,6 +74,12 @@ public struct RazorpayKitPaymentRoutes: RazorpayPaymentRoutes {
     
     public func fetch(id: String) async throws -> Payment {
         try await fetch(id: id, expand: [])
+    }
+
+    public func capture(id: String, amount: Int, currency: String? = "INR") async throws -> Payment {
+        return try await APIRequestHandler.execute {
+            try await client.payment.capture(paymentID: id, amount: amount, currency: currency, extraHeaders: nil)
+        }
     }
     
     public func fetch(id: String, expand: Expandable) async throws -> Payment {
