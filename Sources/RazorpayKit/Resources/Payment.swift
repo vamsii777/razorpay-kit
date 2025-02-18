@@ -276,6 +276,12 @@ public struct RazorpayPaymentRoutes: PaymentRoutes {
         return try await RZPRUTL.processResponse(response)
     }
 
+    @available(*, deprecated, message: "Use capture(paymentID:amount:currency:data:extraHeaders:) instead")
+    public func capture(paymentID: String, amount: Int, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
+        // Default to INR for backward compatibility
+        return try await capture(paymentID: paymentID, amount: amount, currency: .indianRupee, data: data, extraHeaders: extraHeaders)
+    }
+
     public func capture(paymentID: String, amount: Int, currency: Currency, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         var captureData = data
         captureData["amount"] = amount
