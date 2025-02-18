@@ -1,7 +1,7 @@
 import Foundation
 import RazorpayKit
 
-public protocol RazorpayRefundRoutesProtocol: Sendable {
+public protocol RazorpayRefundRoutes: Sendable {
     /// Create a refund for a payment
     /// - Parameters:
     ///   - paymentId: The ID of the payment to refund
@@ -17,7 +17,7 @@ public protocol RazorpayRefundRoutesProtocol: Sendable {
     func fetch(paymentId: String, refundId: String) async throws -> Refund
 }
 
-public struct RazorpayRefundRoutes: RazorpayRefundRoutesProtocol {
+public struct RazorpayKitRefundRoutes: RazorpayRefundRoutes {
     private let client: RazorpayClient
     
     init(client: RazorpayClient) {

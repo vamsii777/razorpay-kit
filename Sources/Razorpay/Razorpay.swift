@@ -49,6 +49,6 @@ public actor Razorpay {
         self.client = razorpayClient
         self.orders = RazorpayKitOrderRoutes(client: razorpayClient)
         self.payments = RazorpayKitPaymentRoutes(client: razorpayClient)
-        self.refunds = RazorpayRefundRoutes(client: razorpayClient)
+        self.refunds = RazorpayKitRefundRoutes(client: razorpayClient)
     }
 }
