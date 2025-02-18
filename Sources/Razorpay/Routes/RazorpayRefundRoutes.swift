@@ -23,6 +23,10 @@ public struct RazorpayRefundRoutes: RazorpayRefundRoutesProtocol {
     init(client: RazorpayClient) {
         self.client = client
     }
+
+    public func create(paymentId:String, amount: Int?, speed: RefundSpeed?, notes: [String: String]?, receipt: String?) async throws -> Refund {
+        return try await create(paymentId: paymentId, request: CreateRefundRequest(amount: amount, speed: speed, notes: notes, receipt: receipt))
+    }
     
     public func create(paymentId: String, request: CreateRefundRequest) async throws -> Refund {
         return try await APIRequestHandler.execute {
