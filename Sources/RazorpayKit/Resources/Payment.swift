@@ -14,7 +14,7 @@ import AsyncHTTPClient
 /// ### Payment Management
 /// - ``all(queryParams:extraHeaders:)``
 /// - ``fetch(paymentID:queryParams:extraHeaders:)``
-/// - ``capture(paymentID:amount:data:extraHeaders:)``
+/// - ``capture(paymentID:amount:currency:data:extraHeaders:)``
 /// - ``edit(paymentID:data:extraHeaders:)``
 ///
 /// ### Refunds
@@ -67,11 +67,12 @@ public protocol PaymentRoutes: RazorpayAPIRoute {
     /// - Parameters:
     ///   - paymentID: The unique identifier of the payment to capture
     ///   - amount: The amount to capture in smallest currency unit (e.g., paise for INR)
+    ///   - currency: The currency of the payment
     ///   - data: Additional data for the capture request
     ///   - extraHeaders: Optional additional headers for the request
     /// - Returns: A dictionary containing the capture response
     /// - Throws: An error if the capture fails
-    func capture(paymentID: String, amount: Int, data: [String: Any], extraHeaders: [String: String]?) async throws -> [String: Any]
+    func capture(paymentID: String, amount: Int, currency: Currency, extraHeaders: [String: String]?) async throws -> [String: Any]
     
     /// Initiates a refund for a payment with the given ID and amount.
     /// - Parameters:
@@ -275,9 +276,16 @@ public struct RazorpayPaymentRoutes: PaymentRoutes {
         return try await RZPRUTL.processResponse(response)
     }
 
+    @available(*, deprecated, message: "Use capture(paymentID:amount:currency:data:extraHeaders:) instead")
     public func capture(paymentID: String, amount: Int, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
-        var captureData = data
+        // Default to INR for backward compatibility
+        return try await capture(paymentID: paymentID, amount: amount, currency: .indianRupee, extraHeaders: extraHeaders)
+    }
+
+    public func capture(paymentID: String, amount: Int, currency: Currency, extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
+        var captureData = [String: Any]()
         captureData["amount"] = amount
+        captureData["currency"] = currency.rawValue
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/\(paymentID)/capture"
         let requestBody = try HTTPClientRequest.Body.json(captureData)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
