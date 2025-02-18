@@ -1,7 +1,7 @@
 import Foundation
 import RazorpayKit
 
-public protocol RazorpayRefundRoutesProtocol {
+public protocol RazorpayRefundRoutesProtocol: Sendable {
     /// Create a refund for a payment
     /// - Parameters:
     ///   - paymentId: The ID of the payment to refund
