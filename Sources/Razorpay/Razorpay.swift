@@ -40,11 +40,15 @@ public actor Razorpay {
     /// Routes for interacting with Razorpay payments
     public let payments: any RazorpayPaymentRoutes
 
+    /// Routes for interacting with Razorpay refunds
+    public let refunds: any RazorpayRefundRoutes
+
     /// Creates a new Razorpay client
     /// - Parameter razorpayClient: The RazorpayKit client to use for API requests
     public init(_ razorpayClient: RazorpayClient) {
         self.client = razorpayClient
         self.orders = RazorpayKitOrderRoutes(client: razorpayClient)
         self.payments = RazorpayKitPaymentRoutes(client: razorpayClient)
+        self.refunds = RazorpayRefundRoutes(client: razorpayClient)
     }
 }
