@@ -8,6 +8,15 @@ public protocol RazorpayRefundRoutes: Sendable {
     ///   - request: The refund request details
     /// - Returns: The created refund
     func create(paymentId: String, request: CreateRefundRequest) async throws -> Refund
+
+    /// Create a refund for a payment
+    /// - Parameters:
+    ///   - paymentId: The ID of the payment to refund
+    ///   - amount: The amount to refund
+    ///   - speed: The speed of the refund
+    ///   - notes: Additional notes for the refund
+    ///   - receipt: The receipt for the refund
+    func create(paymentId: String, amount: Int?, speed: RefundSpeed?, notes: [String: String]?, receipt: String?) async throws -> Refund    
     
     /// Fetch a specific refund by ID
     /// - Parameters:
