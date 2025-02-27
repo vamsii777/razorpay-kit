@@ -1,5 +1,35 @@
 import Foundation
 
+// MARK: - NotesData
+public enum NotesData: Codable {
+    case array([String])
+    case dictionary([String: String?])
+    
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let dict = try? container.decode([String: String?].self) {
+            self = .dictionary(dict)
+        } else if let arr = try? container.decode([String].self) {
+            self = .array(arr)
+        } else {
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Notes must be either a dictionary or an array"
+            )
+        }
+    }
+    
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .array(let array):
+            try container.encode(array)
+        case .dictionary(let dict):
+            try container.encode(dict)
+        }
+    }
+}
+
 // MARK: - Webhook Event
 public struct WebhookEvent: Codable {
     public let entity: String
@@ -75,7 +105,7 @@ public struct PaymentEntity: Codable {
     public let vpa: String?
     public let email: String?
     public let contact: String?
-    public let notes: [String: Any]?
+    public let notes: NotesData?
     public let fee: Int?
     public let tax: Int?
     public let errorCode: String?
@@ -181,7 +211,7 @@ public struct OrderEntity: Codable {
     public let offerId: String?
     public let status: String
     public let attempts: Int
-    public let notes: [String: String?]?
+    public let notes: NotesData?
     public let createdAt: Int
 
     enum CodingKeys: String, CodingKey {
@@ -212,7 +242,7 @@ public struct RefundEntity: Codable {
     public let amount: Int
     public let currency: String
     public let paymentId: String
-    public let notes: [String: Any]?
+    public let notes: NotesData?
     public let receipt: String?
     public let acquirerData: AcquirerData?
     public let createdAt: Int
