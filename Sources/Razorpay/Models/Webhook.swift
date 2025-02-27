@@ -75,7 +75,7 @@ public struct PaymentEntity: Codable {
     public let vpa: String?
     public let email: String?
     public let contact: String?
-    public let notes: [String: String?]?
+    public let notes: [String: Any]?
     public let fee: Int?
     public let tax: Int?
     public let errorCode: String?
@@ -212,7 +212,7 @@ public struct RefundEntity: Codable {
     public let amount: Int
     public let currency: String
     public let paymentId: String
-    public let notes: [String: String]?
+    public let notes: [String: Any]?
     public let receipt: String?
     public let acquirerData: AcquirerData?
     public let createdAt: Int
