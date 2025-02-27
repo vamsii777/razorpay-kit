@@ -181,7 +181,7 @@ public struct OrderEntity: Codable {
     public let offerId: String?
     public let status: String
     public let attempts: Int
-    public let notes: [String: String]
+    public let notes: [String: String?]?
     public let createdAt: Int
 
     enum CodingKeys: String, CodingKey {
