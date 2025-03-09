@@ -1,174 +1,143 @@
 # Processing Payments
 
-Learn how to process payments using various payment methods in Razorpay.
+@Metadata {
+    @PageKind(article)
+}
 
 ## Overview
 
-The Razorpay SDK supports multiple payment methods including cards, UPI, netbanking, and wallets. This guide explains how to implement and handle different payment methods.
+The Razorpay SDK supports various payment methods including cards, UPI, netbanking, wallets, and EMI options.
 
 ## Payment Methods
 
 ### Card Payments
 
-Process credit and debit card payments:
+The SDK supports all major card networks and types:
 
 ```swift
-let cardDetails = Card(
-    number: "4111111111111111",
-    expiryMonth: "12",
-    expiryYear: "24",
-    cvv: "123",
-    name: "John Doe"
-)
-
-client.processCardPayment(
-    orderId: "order_123",
-    card: cardDetails
-) { result in
-    switch result {
-    case .success(let payment):
-        handleSuccessfulPayment(payment)
-    case .failure(let error):
-        handlePaymentError(error)
-    }
+// Card payment information
+let payment = try await client.fetchPayment(paymentId)
+if let card = payment.card {
+    print("Card Network: \(card.network)") // Visa, MasterCard, etc.
+    print("Card Type: \(card.type)") // credit, debit, prepaid
+    print("Card Last4: \(card.last4)")
+    print("EMI Eligible: \(card.emi)")
 }
 ```
 
 ### UPI Payments
 
-Process UPI payments using VPA (Virtual Payment Address):
+Handle UPI payments with detailed information:
 
 ```swift
-let upiDetails = UPIDetails(
-    vpa: "user@upi"
-)
-
-client.processUPIPayment(
-    orderId: "order_123",
-    upi: upiDetails
-) { result in
-    switch result {
-    case .success(let payment):
-        handleSuccessfulPayment(payment)
-    case .failure(let error):
-        handlePaymentError(error)
-    }
-}
-```
-
-### Netbanking
-
-Process payments through netbanking:
-
-```swift
-client.processNetbankingPayment(
-    orderId: "order_123",
-    bankCode: "HDFC"
-) { result in
-    switch result {
-    case .success(let payment):
-        handleSuccessfulPayment(payment)
-    case .failure(let error):
-        handlePaymentError(error)
-    }
-}
-```
-
-## Payment Status
-
-### Checking Payment Status
-
-Monitor the status of a payment:
-
-```swift
-client.fetchPayment(paymentId) { result in
-    switch result {
-    case .success(let payment):
-        switch payment.status {
-        case .created:
-            print("Payment initiated")
-        case .authorized:
-            print("Payment authorized")
-        case .captured:
-            print("Payment captured")
-        case .refunded:
-            print("Payment refunded")
-        case .failed:
-            print("Payment failed")
-        }
-    case .failure(let error):
-        handlePaymentError(error)
-    }
-}
-```
-
-### Handling Payment Response
-
-Process payment response and update UI:
-
-```swift
-func handleSuccessfulPayment(_ payment: Payment) {
-    // Update UI
-    updatePaymentStatus(payment.status)
-    
-    // Store payment details
-    savePaymentDetails(
-        paymentId: payment.id,
-        amount: payment.amount,
-        method: payment.method
-    )
-    
-    // Trigger success callback
-    notifyPaymentSuccess(payment)
-}
-
-func handlePaymentError(_ error: Error) {
-    if let razorpayError = error as? RazorpayError {
-        switch razorpayError {
-        case .invalidRequest(let message):
-            showError("Invalid payment details: \(message)")
-        case .authenticationError:
-            showError("Payment authentication failed")
-        case .serverError(let message):
-            showError("Payment processing error: \(message)")
+if let upi = payment.upi {
+    print("VPA Used: \(upi.vpa)")
+    if let accountType = upi.payerAccountType {
+        switch accountType {
+        case .bankAccount:
+            print("Paid using bank account")
+        case .creditCard:
+            print("Paid using credit card")
+        case .wallet:
+            print("Paid using wallet")
         }
     }
 }
 ```
 
-## Payment Verification
+### EMI Payments
 
-### Verifying Payment Signature
-
-Verify payment signature to ensure authenticity:
+Process EMI payments with detailed plan information:
 
 ```swift
-let signature = "razorpay_signature"
-let orderId = "order_123"
-let paymentId = "pay_123"
+if let emi = payment.emi {
+    print("Bank: \(emi.bank)")
+    print("Tenure: \(emi.tenure) months")
+    print("Interest Rate: \(emi.interestRate)%")
+    print("EMI Amount: ₹\(emi.emiAmount/100)")
+    print("Total Amount: ₹\(emi.totalAmount/100)")
+}
+```
 
-client.verifyPaymentSignature(
-    orderId: orderId,
-    paymentId: paymentId,
-    signature: signature
-) { isValid in
-    if isValid {
-        print("Payment signature verified")
-    } else {
-        print("Invalid payment signature")
+## Payment Status Tracking
+
+Monitor payment status through various stages:
+
+```swift
+switch payment.status {
+case .created:
+    print("Payment initiated")
+case .authorized:
+    print("Payment authorized")
+case .captured:
+    print("Payment captured")
+case .refunded:
+    print("Payment refunded")
+case .failed:
+    print("Payment failed")
+}
+```
+
+## Error Handling
+
+Handle payment failures with detailed error information:
+
+```swift
+if let errorCode = payment.errorCode {
+    print("Error Code: \(errorCode)")
+    print("Error Description: \(payment.errorDescription ?? "Unknown")")
+    print("Error Source: \(payment.errorSource ?? "Unknown")")
+    print("Error Step: \(payment.errorStep ?? "Unknown")")
+}
+```
+
+## Additional Features
+
+### Acquirer Data
+
+Access detailed transaction information:
+
+```swift
+if let acquirerData = payment.acquirerData {
+    print("Bank Transaction ID: \(acquirerData.bankTransactionId ?? "")")
+    print("Auth Code: \(acquirerData.authCode ?? "")")
+    print("ARN: \(acquirerData.arn ?? "")")
+}
+```
+
+### Offers and Discounts
+
+Handle offers applied to payments:
+
+```swift
+if let offers = payment.offers {
+    print("Number of offers applied: \(offers.count)")
+    offers.items.forEach { offer in
+        print("Offer ID: \(offer.id)")
     }
+}
+```
+
+### International Payments
+
+Handle international transactions:
+
+```swift
+if payment.international {
+    print("International payment")
+    print("Currency: \(payment.currency)")
 }
 ```
 
 ## Best Practices
 
-- Always verify payment signatures
-- Implement proper error handling
-- Store payment details securely
-- Update UI promptly with payment status
-- Handle network errors gracefully
-- Implement retry logic for failed payments
-- Log payment events for debugging
+1. Always verify payment status on your server
+2. Implement proper webhook handling
+3. Store payment IDs for future reference
+4. Handle partial payments when enabled
+5. Implement proper error recovery
+6. Follow security guidelines for handling sensitive data
+7. Maintain proper logs for debugging and auditing
 
 ## Topics
 
@@ -177,11 +146,3 @@ client.verifyPaymentSignature(
 - ``Payment``
 - ``Payment/Status``
 - ``Payment/Method``
-- ``Payment/Card``
-- ``Payment/UPIDetails``
-
-### Related Types
-
-- ``RazorpayClient``
-- ``RazorpayError``
-- ``OrderResponse`` 

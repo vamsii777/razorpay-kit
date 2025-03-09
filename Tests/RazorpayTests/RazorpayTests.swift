@@ -28,7 +28,7 @@ struct RazorpayKitTests {
         let razorpay = Razorpay(razorpayClient)
         let orderRequest = OrderRequest(
             amount: 1000000,
-            currency: "INR", 
+            currency: .indianRupee,
             receipt: "Receipt#1",
             notes: [
                 "customer_name": "John Doe",
@@ -57,7 +57,7 @@ struct RazorpayKitTests {
         let razorpay = Razorpay(razorpayClient)
         let orderRequest = OrderRequest(
             amount: 100,  // Minimum amount (₹1)
-            currency: "INR"
+            currency: .indianRupee
         )
         
         let order = try await razorpay.orders.create(orderRequest)
@@ -73,7 +73,7 @@ struct RazorpayKitTests {
         let razorpay = Razorpay(razorpayClient)
         let orderRequest = OrderRequest(
             amount: 50,  // Less than minimum amount
-            currency: "INR"
+            currency: .indianRupee
         )
         
         await #expect {
@@ -96,7 +96,7 @@ struct RazorpayKitTests {
         let razorpay = Razorpay(razorpayClient)
         let orderRequest = OrderRequest(
             amount: 1000000,
-            currency: "INVALID"
+            currency: .init(rawValue: "INVALID")!
         )
         
         await #expect {
@@ -165,7 +165,7 @@ struct RazorpayKitTests {
         // First create an order
         let order = try await razorpay.orders.create(OrderRequest(
             amount: 1000000,
-            currency: "INR"
+            currency: .indianRupee
         ))
         
         // Then fetch its payments
@@ -173,6 +173,72 @@ struct RazorpayKitTests {
         
         #expect(payments.count == 0) // New order should have no payments
         #expect(payments.entity == "collection")
+    }
+    
+    // MARK: - Downtime Tests
+    
+    /// Tests fetching all payment downtimes
+    @Test func fetchAllDowntimes() async throws {
+        let razorpay = Razorpay(razorpayClient)
+        
+        let downtimes = try await razorpay.downtimes.fetchAll()
+        
+        #expect(downtimes.entity == "collection")
+        #expect(downtimes.count ?? 0 >= 0) // Should be 0 or more
+        
+        // If there are downtimes, verify their structure
+        if let firstDowntime = downtimes.items?.first {
+            #expect(!(firstDowntime.id?.isEmpty ?? true))
+            #expect(firstDowntime.entity == "payment.downtime")
+            #expect((firstDowntime.begin ?? 0) > 0)
+            #expect(firstDowntime.method != nil)
+            #expect(firstDowntime.status != nil)
+            #expect(firstDowntime.severity != nil)
+            
+            // Verify instrument details based on method
+            if let method = firstDowntime.method {
+                switch method {
+                case .card:
+                    #expect(firstDowntime.instrument?.issuer != nil || firstDowntime.instrument?.network != nil)
+                case .netbanking:
+                    #expect(firstDowntime.instrument?.bank != nil)
+                case .upi:
+                    #expect(firstDowntime.instrument?.vpa != nil || firstDowntime.instrument?.psp != nil)
+                case .fpx:
+                    #expect(firstDowntime.instrument?.bank != nil)
+                case .unknown(let value):
+                    print("Found unknown payment method: \(value)")
+                    // Test passes for unknown methods without specific validation
+                default:
+                    // Known methods without specific instrument requirements
+                    break
+                }
+            }
+            
+            // Print unknown methods for monitoring
+            if case .unknown(let value) = firstDowntime.method {
+                print("Warning: Encountered unknown payment method: \(value)")
+            }
+        }
+    }
+    
+    /// Tests fetching a specific payment downtime
+    @Test func fetchSpecificDowntime() async throws {
+        let razorpay = Razorpay(razorpayClient)
+        
+        await #expect {
+            _ = try await razorpay.downtimes.fetch(id: "invalid_downtime_id")
+            return false
+        } throws: { error in
+            guard let razorpayError = error as? RazorpayError,
+                  case .apiError(let apiError) = razorpayError else {
+                return false
+            }
+            
+            #expect(apiError.code == .badRequestError)
+            #expect(apiError.description.contains("does not exist"))
+            return true
+        }
     }
     
     // MARK: - Authentication Tests
@@ -188,7 +254,7 @@ struct RazorpayKitTests {
         
         let orderRequest = OrderRequest(
             amount: 1000000,
-            currency: "INR"
+            currency: .indianRupee
         )
         
         await #expect {

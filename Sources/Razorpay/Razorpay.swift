@@ -30,6 +30,8 @@ import Vapor
 /// - ``orders``
 /// - ``razorpayClient``
 /// - ``payments``
+/// - ``refunds``
+/// - ``downtimes``
 public actor Razorpay {
     /// The underlying RazorpayKit client used for API requests
     public let client: RazorpayClient
@@ -42,6 +44,9 @@ public actor Razorpay {
 
     /// Routes for interacting with Razorpay refunds
     public let refunds: any RazorpayRefundRoutes
+    
+    /// Routes for interacting with Razorpay payment downtimes
+    public let downtimes: any RazorpayDowntimeRoutes
 
     /// Creates a new Razorpay client
     /// - Parameter razorpayClient: The RazorpayKit client to use for API requests
@@ -50,5 +55,6 @@ public actor Razorpay {
         self.orders = RazorpayKitOrderRoutes(client: razorpayClient)
         self.payments = RazorpayKitPaymentRoutes(client: razorpayClient)
         self.refunds = RazorpayKitRefundRoutes(client: razorpayClient)
+        self.downtimes = RazorpayKitDowntimeRoutes(client: razorpayClient)
     }
 }

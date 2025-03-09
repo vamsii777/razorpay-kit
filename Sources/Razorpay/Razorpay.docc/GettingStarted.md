@@ -14,7 +14,8 @@ Before you begin, make sure you have:
 
 - A Razorpay account with API credentials
 - Xcode 13.0 or later
-- iOS 13.0 or later / macOS 10.15 or later
+- iOS 13.0 or later / macOS 10.15 or later / watchOS 8.0 or later
+- Swift 5.5 or later (for async/await support)
 
 ### Installation
 
@@ -48,14 +49,26 @@ let client = RazorpayClient(
 ```swift
 let orderRequest = OrderRequest(
     amount: 100000, // Amount in paise (₹1000.00)
-    currency: "INR",
-    receipt: "order_123"
+    currency: .indianRupee,
+    receipt: "order_123",
+    notes: ["customer_name": "John Doe"],
+    partialPayment: false
 )
 ```
 
 2. Submit the order:
 
 ```swift
+// Using async/await
+do {
+    let order = try await client.createOrder(orderRequest)
+    print("Order created: \(order.id)")
+    // Present payment options to user
+} catch {
+    print("Error: \(error)")
+}
+
+// Using completion handler
 client.createOrder(orderRequest) { result in
     switch result {
     case .success(let order):
@@ -74,6 +87,9 @@ client.createOrder(orderRequest) { result in
 - Validate amounts before creating orders
 - Implement proper error handling
 - Use appropriate currency codes
+- Implement proper logging and monitoring
+- Follow PCI DSS guidelines when handling card data
+- Implement proper webhook validation
 
 ## Next Steps
 
@@ -81,6 +97,8 @@ client.createOrder(orderRequest) { result in
 - Implement webhooks for payment notifications
 - Set up recurring payments
 - Handle refunds
+- Implement server-side validation
+- Set up test mode for development
 
 ## Topics
 
@@ -95,4 +113,5 @@ client.createOrder(orderRequest) { result in
 - ``RazorpayClient``
 - ``OrderRequest``
 - ``OrderResponse``
-- ``Payment`` 
+- ``Payment``
+- ``PaymentCollection`` 

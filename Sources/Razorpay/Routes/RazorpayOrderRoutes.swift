@@ -15,7 +15,7 @@ import NIOHTTP1
 ///
 /// ## Topics
 /// ### Creating Orders
-/// - ``create(amount:currency:receipt:notes:partialPayment:firstPaymentMinAmount:)``
+/// - ``create(amount:currency:receipt:notes:)``
 public protocol RazorpayOrderRoutes: Sendable {
     /// Creates a new order with the specified parameters
     /// - Parameter request: The order creation request

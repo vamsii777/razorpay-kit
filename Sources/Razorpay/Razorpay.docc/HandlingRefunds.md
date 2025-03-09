@@ -1,10 +1,12 @@
 # Handling Refunds
 
-Learn how to process and manage refunds for payments made through Razorpay.
+@Metadata {
+    @PageKind(article)
+}
 
 ## Overview
 
-The Razorpay SDK provides comprehensive support for processing refunds, both full and partial. This guide covers the various aspects of handling refunds in your application.
+The Razorpay SDK provides comprehensive support for processing refunds, both full and partial, with detailed tracking and status management.
 
 ## Processing Refunds
 
@@ -13,15 +15,23 @@ The Razorpay SDK provides comprehensive support for processing refunds, both ful
 Process a full refund for a payment:
 
 ```swift
-client.refundPayment(
-    paymentId: "pay_123"
-) { result in
+// Using async/await
+do {
+    let refund = try await client.refundPayment(
+        paymentId: "pay_123"
+    )
+    print("Full refund processed: \(refund.id)")
+} catch {
+    print("Refund failed: \(error)")
+}
+
+// Using completion handler
+client.refundPayment(paymentId: "pay_123") { result in
     switch result {
     case .success(let refund):
-        print("Refund processed: \(refund.id)")
-        print("Amount refunded: \(refund.amount)")
+        print("Full refund processed: \(refund.id)")
     case .failure(let error):
-        handleRefundError(error)
+        print("Refund failed: \(error)")
     }
 }
 ```
@@ -31,156 +41,125 @@ client.refundPayment(
 Process a partial refund with specific amount:
 
 ```swift
-client.refundPayment(
+let refundRequest = RefundRequest(
+    amount: 50000, // Partial refund of ₹500
+    notes: ["reason": "Customer request"],
+    receiptNumber: "refund_receipt_123"
+)
+
+try await client.refundPayment(
     paymentId: "pay_123",
-    amount: 50000, // ₹500.00 in paise
-    notes: ["reason": "Customer request"]
-) { result in
-    switch result {
-    case .success(let refund):
-        handleSuccessfulRefund(refund)
-    case .failure(let error):
-        handleRefundError(error)
-    }
-}
+    request: refundRequest
+)
 ```
 
-## Refund Status
-
-### Checking Refund Status
+## Tracking Refund Status
 
 Monitor the status of a refund:
 
 ```swift
-client.fetchRefund(
+let payment = try await client.fetchPayment("pay_123")
+
+switch payment.refundStatus {
+case .partial:
+    print("Partial refund processed")
+    print("Refunded amount: ₹\(payment.amountRefunded/100)")
+    print("Remaining amount: ₹\(payment.amount - payment.amountRefunded)/100")
+case .full:
+    print("Full refund processed")
+    print("Refunded amount: ₹\(payment.amountRefunded/100)")
+case .none:
+    print("No refunds processed")
+}
+```
+
+## Fetching Refund Details
+
+Retrieve detailed information about a specific refund:
+
+```swift
+let refund = try await client.fetchRefund(
     paymentId: "pay_123",
     refundId: "rfnd_123"
-) { result in
-    switch result {
-    case .success(let refund):
-        switch refund.status {
-        case .processed:
-            print("Refund processed")
-        case .processing:
-            print("Refund in progress")
-        case .failed:
-            print("Refund failed")
-        }
-    case .failure(let error):
-        handleRefundError(error)
-    }
-}
+)
+
+print("Refund ID: \(refund.id)")
+print("Amount: ₹\(refund.amount/100)")
+print("Status: \(refund.status)")
+print("Created At: \(refund.createdAt)")
 ```
 
-### Listing All Refunds
+## Listing All Refunds
 
-Fetch all refunds for a payment:
+Get a list of all refunds for a payment:
 
 ```swift
-client.fetchAllRefunds(
+let refunds = try await client.listRefunds(
     paymentId: "pay_123"
-) { result in
-    switch result {
-    case .success(let refunds):
-        for refund in refunds {
-            print("Refund ID: \(refund.id)")
-            print("Amount: \(refund.amount)")
-            print("Status: \(refund.status)")
-        }
-    case .failure(let error):
-        handleRefundError(error)
-    }
+)
+
+print("Total refunds: \(refunds.count)")
+refunds.items.forEach { refund in
+    print("Refund ID: \(refund.id)")
+    print("Amount: ₹\(refund.amount/100)")
+    print("Status: \(refund.status)")
 }
 ```
 
-## Handling Responses
+## Speed Processing
 
-### Successful Refund
-
-Handle successful refund response:
+Request faster refund processing:
 
 ```swift
-func handleSuccessfulRefund(_ refund: Refund) {
-    // Update UI
-    updateRefundStatus(refund.status)
-    
-    // Store refund details
-    saveRefundDetails(
-        refundId: refund.id,
-        amount: refund.amount,
-        status: refund.status
-    )
-    
-    // Notify user
-    notifyRefundSuccess(refund)
-}
-```
+let refundRequest = RefundRequest(
+    amount: 100000,
+    speed: .optimum,
+    notes: ["priority": "high"]
+)
 
-### Error Handling
-
-Implement robust error handling:
-
-```swift
-func handleRefundError(_ error: Error) {
-    if let razorpayError = error as? RazorpayError {
-        switch razorpayError {
-        case .invalidRequest(let message):
-            showError("Invalid refund request: \(message)")
-        case .authenticationError:
-            showError("Authentication failed")
-        case .serverError(let message):
-            showError("Refund processing error: \(message)")
-        }
-    }
-}
+try await client.refundPayment(
+    paymentId: "pay_123",
+    request: refundRequest
+)
 ```
 
 ## Best Practices
 
-### Amount Validation
+1. Always verify refund eligibility before processing
+2. Maintain proper records of refund transactions
+3. Implement proper error handling for refund failures
+4. Use webhooks to track refund status changes
+5. Consider implementing refund policies
+6. Handle partial refunds carefully
+7. Keep customers informed about refund status
+8. Implement proper logging for audit trails
 
-Validate refund amount before processing:
+## Error Handling
+
+Handle refund-specific errors:
 
 ```swift
-func validateRefundAmount(
-    refundAmount: Int,
-    paymentAmount: Int
-) -> Bool {
-    // Check if refund amount is valid
-    guard refundAmount > 0 else {
-        return false
+do {
+    let refund = try await client.refundPayment(
+        paymentId: "pay_123"
+    )
+} catch let error as RazorpayError {
+    switch error {
+    case .invalidRequest(let message):
+        print("Invalid refund request: \(message)")
+    case .authenticationError:
+        print("Authentication failed")
+    case .serverError(let message):
+        print("Server error: \(message)")
     }
-    
-    // Check if refund amount doesn't exceed payment amount
-    guard refundAmount <= paymentAmount else {
-        return false
-    }
-    
-    return true
 }
-```
-
-### Refund Notes
-
-Add detailed notes for better tracking:
-
-```swift
-let refundNotes: [String: String] = [
-    "reason": "Customer dissatisfied",
-    "request_date": ISO8601DateFormatter().string(from: Date()),
-    "requested_by": "support_agent_123"
-]
 ```
 
 ## Topics
 
-### Essential Refund Operations
-
-- ``Refund``
-- ``Refund/Status``
-- ``Payment``
-
 ### Related Types
 
-- ``RazorpayClient``
-- ``RazorpayError`` 
+- ``Payment``
+- ``RefundRequest``
+- ``RefundResponse``
+- ``Payment/RefundStatus`` 

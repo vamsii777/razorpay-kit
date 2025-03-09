@@ -1,10 +1,14 @@
 # ``Razorpay``
 
+@Metadata {
+    @PageKind(article)
+}
+
 A Swift package that provides a type-safe interface to interact with the Razorpay payment gateway.
 
 ## Overview
 
-The Razorpay Swift package provides a comprehensive set of tools and models to integrate Razorpay payment gateway into your iOS or macOS applications. It offers type-safe APIs for creating orders, processing payments, and handling various payment-related operations.
+The Razorpay Swift package provides a comprehensive set of tools and models to integrate Razorpay payment gateway into your iOS, macOS, or server-side Swift applications. It offers type-safe APIs for creating orders, processing payments, and handling various payment-related operations.
 
 ## Installation
 
@@ -16,46 +20,9 @@ dependencies: [
 ]
 ```
 
-## Topics
+## Getting Started
 
-### Essentials
-
-- <doc:GettingStarted>
-- ``RazorpayClient``
-
-### Payment Processing
-
-- ``Payment``
-- ``OrderRequest``
-- ``OrderResponse``
-
-### Models
-
-- ``Payment/Status``
-- ``Payment/Method``
-- ``Payment/RefundStatus``
-- ``Payment/UPIDetails``
-- ``Payment/Card``
-- ``Payment/EMIDetails``
-- ``OrderResponse/Status``
-
-### Error Handling
-
-- ``RazorpayError``
-
-### Articles
-
-- <doc:CreatingOrders>
-- <doc:ProcessingPayments>
-- <doc:HandlingRefunds>
-
-# Getting Started
-
-@Metadata {
-    @PageKind(article)
-}
-
-## Creating a Razorpay Client
+### Creating a Razorpay Client
 
 To get started with the Razorpay SDK, create a client instance with your API credentials:
 
@@ -66,14 +33,14 @@ let client = RazorpayClient(
 )
 ```
 
-## Creating an Order
+### Creating an Order
 
 Create a new order using the `OrderRequest` model:
 
 ```swift
 let orderRequest = OrderRequest(
     amount: 100000, // Amount in paise (₹1000.00)
-    currency: "INR",
+    currency: .indianRupee,
     receipt: "order_123",
     notes: ["customer_name": "John Doe"]
 )
@@ -88,7 +55,7 @@ client.createOrder(orderRequest) { result in
 }
 ```
 
-## Processing Payments
+### Processing Payments
 
 Once an order is created, you can process payments using various payment methods:
 
@@ -121,125 +88,45 @@ if let error = error as? RazorpayError {
 }
 ```
 
-# Creating Orders
+## Topics
 
-@Metadata {
-    @PageKind(article)
-}
+### Essentials
 
-## Overview
+- <doc:GettingStarted>
+- ``RazorpayClient``
 
-Orders are the first step in the payment process. An order represents the intent to collect payment and contains information about the amount, currency, and other optional details.
+### Payment Processing
 
-## Creating a Basic Order
+- ``Payment``
+- ``OrderRequest``
+- ``OrderResponse``
+- ``PaymentCollection``
 
-```swift
-let orderRequest = OrderRequest(
-    amount: 100000,
-    currency: "INR"
-)
-```
+### Models
 
-## Adding Optional Details
+- ``Payment/Status``
+- ``Payment/Method``
+- ``Payment/RefundStatus``
+- ``Payment/UPIDetails``
+- ``Payment/Card``
+- ``Payment/EMIDetails``
+- ``Payment/OffersDetails``
+- ``Payment/AcquirerData``
+- ``OrderResponse/Status``
 
-You can include additional information with your order:
+### Payment Methods
 
-```swift
-let orderRequest = OrderRequest(
-    amount: 100000,
-    currency: "INR",
-    receipt: "order_123",
-    notes: ["customer_name": "John Doe"],
-    partialPayment: true,
-    firstPaymentMinAmount: 50000
-)
-```
+- ``Payment/Card/Network``
+- ``Payment/Card/CardType``
+- ``Payment/Card/SubType``
+- ``Payment/UPIDetails/PayerAccountType``
 
-## Handling Order Response
+### Error Handling
 
-The order response contains important information about the created order:
+- ``RazorpayError``
 
-```swift
-client.createOrder(orderRequest) { result in
-    switch result {
-    case .success(let order):
-        print("Order ID: \(order.id)")
-        print("Amount: \(order.amount)")
-        print("Status: \(order.status)")
-    case .failure(let error):
-        print("Error: \(error)")
-    }
-}
-```
+### Articles
 
-# Processing Payments
-
-@Metadata {
-    @PageKind(article)
-}
-
-## Overview
-
-The Razorpay SDK supports various payment methods including cards, UPI, netbanking, and wallets.
-
-## Payment Methods
-
-### Card Payments
-
-```swift
-let cardDetails = Card(
-    number: "4111111111111111",
-    expiryMonth: "12",
-    expiryYear: "24",
-    cvv: "123"
-)
-```
-
-### UPI Payments
-
-```swift
-let upiDetails = UPIDetails(
-    vpa: "user@upi"
-)
-```
-
-## Handling Payment Response
-
-```swift
-client.fetchPayment(paymentId) { result in
-    switch result {
-    case .success(let payment):
-        if payment.status == .captured {
-            print("Payment successful")
-        }
-    case .failure(let error):
-        print("Payment failed: \(error)")
-    }
-}
-```
-
-# Handling Refunds
-
-@Metadata {
-    @PageKind(article)
-}
-
-## Overview
-
-The SDK provides functionality to process full and partial refunds for payments.
-
-## Processing Refunds
-
-```swift
-client.refundPayment(
-    paymentId: "pay_123",
-    amount: 50000 // Partial refund of ₹500
-) { result in
-    switch result {
-    case .success(let refund):
-        print("Refund processed: \(refund.id)")
-    case .failure(let error):
-        print("Refund failed: \(error)")
-    }
-}
-```
+- <doc:CreatingOrders>
+- <doc:ProcessingPayments>
+- <doc:HandlingRefunds>
