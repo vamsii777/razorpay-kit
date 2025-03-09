@@ -11,7 +11,7 @@ import Foundation
 ///     "currency": Currency.indianRupee.rawValue
 /// ]
 /// ```
-public enum Currency: String, CaseIterable {
+public enum Currency: String, Codable, CaseIterable, Sendable {
     /// Indian Rupee (₹)
     case indianRupee = "INR"
     

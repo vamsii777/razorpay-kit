@@ -33,7 +33,7 @@ public protocol RazorpayOrderRoutes: Sendable {
     /// - Throws: ``RazorpayError`` if the request fails or response is invalid
     func create(
         amount: Int,
-        currency: String,
+        currency: Currency,
         receipt: String?,
         notes: [String: String]?
     ) async throws -> OrderResponse
@@ -71,7 +71,7 @@ public struct RazorpayKitOrderRoutes: RazorpayOrderRoutes {
     
     public func create(
         amount: Int,
-        currency: String,
+        currency: Currency,
         receipt: String? = nil,
         notes: [String: String]? = nil
     ) async throws -> OrderResponse {

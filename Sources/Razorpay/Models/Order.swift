@@ -1,4 +1,5 @@
 import Foundation
+import RazorpayKit
 
 /// Represents a request to create a new Razorpay order
 public struct OrderRequest: Codable, Sendable {
@@ -6,7 +7,7 @@ public struct OrderRequest: Codable, Sendable {
     public let amount: Int
     
     /// ISO currency code (e.g., "INR")
-    public let currency: String
+    public let currency: Currency
     
     /// Optional unique receipt number for your reference
     public let receipt: String?
@@ -30,7 +31,7 @@ public struct OrderRequest: Codable, Sendable {
     ///   - firstPaymentMinAmount: Optional minimum amount for first partial payment
     public init(
         amount: Int,
-        currency: String,
+        currency: Currency,
         receipt: String? = nil,
         notes: [String: String]? = nil,
         partialPayment: Bool? = nil,

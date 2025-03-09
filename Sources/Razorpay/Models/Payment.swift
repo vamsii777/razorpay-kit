@@ -1,4 +1,5 @@
 import Foundation
+import RazorpayKit
 
 /// Represents a payment in the Razorpay system
 public struct Payment: Codable, Sendable, RazorpayResponse {
@@ -12,7 +13,7 @@ public struct Payment: Codable, Sendable, RazorpayResponse {
     public let amount: Int
     
     /// Currency of the payment
-    public let currency: String
+    public let currency: Currency
     
     /// Current status of the payment
     public let status: Status

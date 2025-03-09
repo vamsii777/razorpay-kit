@@ -1,4 +1,5 @@
 import Foundation
+import RazorpayKit
 
 // MARK: - NotesData
 public enum NotesData: Codable {
@@ -89,7 +90,7 @@ public struct PaymentEntity: Codable {
     public let id: String
     public let entity: String
     public let amount: Int
-    public let currency: String
+    public let currency: Currency
     public let status: String
     public let orderId: String?
     public let invoiceId: String?
@@ -206,7 +207,7 @@ public struct OrderEntity: Codable {
     public let amount: Int
     public let amountPaid: Int
     public let amountDue: Int
-    public let currency: String
+    public let currency: Currency
     public let receipt: String?
     public let offerId: String?
     public let status: String
@@ -240,7 +241,7 @@ public struct RefundEntity: Codable {
     public let id: String
     public let entity: String
     public let amount: Int
-    public let currency: String
+    public let currency: Currency
     public let paymentId: String
     public let notes: NotesData?
     public let receipt: String?
