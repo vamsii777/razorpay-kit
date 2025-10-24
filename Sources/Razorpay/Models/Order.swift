@@ -49,7 +49,7 @@ public struct OrderRequest: Codable, Sendable {
     internal var dictionary: [String: Any] {
         var data: [String: Any] = [
             "amount": amount,
-            "currency": currency
+            "currency": currency.rawValue
         ]
         
         if let receipt = receipt {
