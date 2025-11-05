@@ -16,7 +16,21 @@ import NIOHTTP1
 /// ## Topics
 /// ### Creating Orders
 /// - ``create(amount:currency:receipt:notes:)``
+/// ### Fetching Orders
+/// - ``fetch(id:)``
+/// - ``fetchAll()``
 public protocol RazorpayOrderRoutes: Sendable {
+    /// Fetches details of a specific order
+    /// - Parameter id: Unique identifier of the order
+    /// - Returns: The order details
+    /// - Throws: ``RazorpayError`` if the request fails or response is invalid
+    func fetch(id: String) async throws -> OrderResponse
+
+    /// Fetches all orders
+    /// - Returns: Collection of orders
+    /// - Throws: ``RazorpayError`` if the request fails or response is invalid
+    func fetchAll() async throws -> OrderCollection
+
     /// Creates a new order with the specified parameters
     /// - Parameter request: The order creation request
     /// - Returns: The created order
@@ -49,13 +63,25 @@ public protocol RazorpayOrderRoutes: Sendable {
 /// - ``init(client:)``
 public struct RazorpayKitOrderRoutes: RazorpayOrderRoutes {
     private let client: RazorpayClient
-    
+
     /// Creates a new instance with the specified client
     /// - Parameter client: The RazorpayKit client to use for API requests
     public init(client: RazorpayClient) {
         self.client = client
     }
-    
+
+    public func fetch(id: String) async throws -> OrderResponse {
+        return try await APIRequestHandler.execute {
+            try await client.order.fetch(orderID: id, queryParams: nil, extraHeaders: nil)
+        }
+    }
+
+    public func fetchAll() async throws -> OrderCollection {
+        return try await APIRequestHandler.execute {
+            try await client.order.all(queryParams: nil, extraHeaders: nil)
+        }
+    }
+
     public func create(_ request: OrderRequest) async throws -> OrderResponse {
         try APIRequestHandler.validateMinimum(
             request.amount,

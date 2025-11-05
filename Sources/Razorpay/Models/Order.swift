@@ -140,7 +140,7 @@ public struct OrderResponse: RazorpayResponse, Sendable {
         let data = try JSONSerialization.data(withJSONObject: response)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        
+
         // Handle empty notes array by converting to empty dictionary
         if let notesArray = response["notes"] as? [Any], notesArray.isEmpty {
             var mutableResponse = response
@@ -149,7 +149,19 @@ public struct OrderResponse: RazorpayResponse, Sendable {
             self = try decoder.decode(OrderResponse.self, from: updatedData)
             return
         }
-        
+
         self = try decoder.decode(OrderResponse.self, from: data)
     }
-} 
+}
+
+/// Collection of orders from Razorpay
+public struct OrderCollection: Codable, Sendable, RazorpayResponse {
+    /// Type of entity (always "collection")
+    public let entity: String
+
+    /// Number of orders in the collection
+    public let count: Int
+
+    /// List of orders
+    public let items: [OrderResponse]
+}
