@@ -119,7 +119,7 @@ public actor RazorpayClient {
     ///   - httpClient: The HTTP client to use for making requests
     ///   - key: Your Razorpay API key
     ///   - secret: Your Razorpay API secret
-    public init(httpClient: HTTPClient, key: String, secret: String) {
+    public init(_ httpClient: HTTPClient = HTTPClient.shared, key: String, secret: String) {
         self.handler = RazorpayAPIHandler(httpClient: httpClient, key: key, secret: secret)
         account = RazorpayAccountRoutes(client: handler)
         addon = RazorpayAddonRoutes(client: handler)

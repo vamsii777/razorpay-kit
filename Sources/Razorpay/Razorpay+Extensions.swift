@@ -29,7 +29,7 @@ extension Request {
 
 extension Razorpay {
     public init(key: String, secret: String, httpClient: HTTPClient) {
-        let razorpayClient = RazorpayClient(httpClient: httpClient, key: key, secret: secret)
+        let razorpayClient = RazorpayClient(httpClient, key: key, secret: secret)
         self.init(razorpayClient)
     }
 
