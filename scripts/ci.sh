@@ -11,7 +11,10 @@ if [[ -n "${SWIFT_IMAGE:-}" ]]; then
 fi
 
 swift --version
-swift build --build-tests -Xswiftc -warnings-as-errors
 if [[ "${RUN_TESTS:-1}" == "1" ]]; then
+  swift build --build-tests -Xswiftc -warnings-as-errors
   swift test --skip-build ${SWIFT_TEST_ARGS:-}
+else
+  # Build-only (e.g. Swift 5.10, which has no swift-testing): skip test targets.
+  swift build -Xswiftc -warnings-as-errors
 fi
