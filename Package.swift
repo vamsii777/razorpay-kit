@@ -17,6 +17,11 @@ let features: [(String, [String])] = [
     ("RazorpayOrders", ["RazorpayPayments"]),
     ("RazorpayRefunds", ["RazorpayPayments"]),
     ("RazorpayCustomers", []),
+    ("RazorpayItems", []),
+    ("RazorpayInvoices", []),
+    ("RazorpaySubscriptions", ["RazorpayItems"]),
+    ("RazorpayAddons", ["RazorpayItems"]),
+    ("RazorpayProducts", []),
     ("RazorpayLegacy", []),
 ]
 
