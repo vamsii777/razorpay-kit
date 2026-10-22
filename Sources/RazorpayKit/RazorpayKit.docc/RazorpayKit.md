@@ -47,5 +47,8 @@ error you ever see is ``RazorpayError``. On Swift 6 compilers that's enforced wi
 - ``RazorpayError``
 - ``JSONValue``
 
+### Integrations
+- <doc:Vapor>
+
 ### Upgrading
 - <doc:Migration>

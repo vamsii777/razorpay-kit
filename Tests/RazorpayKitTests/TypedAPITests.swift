@@ -217,3 +217,30 @@ struct RawTests {
         #expect(await mock.requests.isEmpty)
     }
 }
+
+/// Coverage carried over from the removed Vapor `RazorpayTests` target.
+@Suite("Carried over from RazorpayTests")
+struct CarriedOverTests {
+    @Test(arguments: [0, -100])
+    func nonPositiveOrderAmountFailsWithoutRequest(paise: Int) async {
+        let mock = MockTransport(json: Fixtures.order)
+        do {
+            _ = try await client(mock).orders.create(.init(amount: .inr(paise: paise)))
+            Issue.record("expected throw")
+        } catch {
+            guard case .invalidRequest = error else { Issue.record("got \(error)"); return }
+        }
+        #expect(await mock.requests.isEmpty)
+    }
+
+    @Test(arguments: [400, 401, 404, 500])
+    func typedRoutesThrowOnNon2xx(status: Int) async {
+        let mock = MockTransport(status: .init(statusCode: status), json: #"{"error":{"code":"BAD_REQUEST_ERROR","description":"x"}}"#)
+        do {
+            _ = try await client(mock).orders.fetch("order_TEST000001")
+            Issue.record("expected throw")
+        } catch {
+            #expect(error.statusCode == status)
+        }
+    }
+}

@@ -38,6 +38,24 @@ Every call is async, models are `Sendable` and `Codable`, and the only error typ
 which Swift 6 compilers enforce with `throws(RazorpayError)`. It builds on Swift 5.10 or later. See the DocC
 catalog in `Sources/RazorpayKit/RazorpayKit.docc`, including the migration guide.
 
+## Using with Vapor
+
+There is no Vapor dependency. Create one client on Vapor's HTTP client, store it, and verify webhooks over the raw body:
+
+```swift
+app.razorpay = RazorpayClient(app.http.client.shared, key: keyID, secret: keySecret, webhookSecret: webhookSecret)
+
+app.on(.POST, "webhooks", "razorpay", body: .collect(maxSize: "1mb")) { req async throws -> HTTPStatus in
+    guard let body = req.body.data else { throw Abort(.badRequest) }
+    let event = try req.razorpay.webhooks.verify(body.readableBytesView,
+                                                 signature: req.headers.first(name: "X-Razorpay-Signature"))
+    if case .paymentCaptured(let payment) = event { try await fulfil(payment) }
+    return .ok
+}
+```
+
+The full example, including the `app.razorpay` storage extension, is in the DocC article `Vapor.md`.
+
 ## Using the API (dictionary routes)
 
 Initialize the `RazorpayClient` with your Razorpay API key, secret, and environment. This client will be your gateway to interacting with the Razorpay API.
