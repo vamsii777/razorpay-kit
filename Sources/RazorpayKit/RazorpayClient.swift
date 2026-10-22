@@ -156,3 +156,14 @@ public actor RazorpayClient {
         webhook = RazorpayWebhookRoutes(client: handler)
     }
 }
+
+extension RazorpayClient: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    /// A description that never includes the API key or secret.
+    public nonisolated var description: String { "RazorpayClient(credentials: <redacted>)" }
+    /// A debug description that never includes the API key or secret.
+    public nonisolated var debugDescription: String { description }
+    /// A mirror that hides the API key, secret and Authorization header.
+    public nonisolated var customMirror: Mirror {
+        Mirror(self, children: ["credentials": "<redacted>"], displayStyle: .class)
+    }
+}
