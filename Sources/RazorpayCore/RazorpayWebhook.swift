@@ -16,7 +16,7 @@ public protocol WebhookEntity: Decodable, Sendable {
 ///     let payment = try webhook.entity(Payment.self)
 /// }
 /// ```
-/// With `import RazorpayKit`, `try webhook.event` gives an exhaustive ``WebhookEvent``-style enum.
+/// With `import RazorpayKit`, `try webhook.event` gives an exhaustive `WebhookEvent` enum.
 public struct RazorpayWebhook: Sendable, Hashable, Decodable {
     /// An event name such as `payment.captured`. Open: unknown names are kept.
     public struct Name: RazorpayStringEnum {

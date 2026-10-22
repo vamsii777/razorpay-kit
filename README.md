@@ -17,6 +17,13 @@ dependencies: [
 ```
 
 
+### Modules
+
+Depend on `RazorpayKit` for everything, or on single areas such as `RazorpayPayments`, `RazorpayOrders`,
+`RazorpayRefunds`, `RazorpayCustomers`, `RazorpayTokens`, `RazorpayCards`, `RazorpayPaymentLinks`, `RazorpayQRCodes`,
+`RazorpayRoute`, `RazorpaySmartCollect` and `RazorpayVerification` (signatures and webhooks). Each adds its namespace to
+the same `RazorpayClient`. See the "Choosing modules" DocC article.
+
 ## Quick start (1.0)
 
 ```swift
@@ -56,7 +63,9 @@ app.on(.POST, "webhooks", "razorpay", body: .collect(maxSize: "1mb")) { req asyn
 
 The full example, including the `app.razorpay` storage extension, is in the DocC article `Vapor.md`.
 
-## Using the API (dictionary routes)
+## Using the API (dictionary routes, deprecated)
+
+These `[String: Any]` routes live in `RazorpayLegacy` and are deprecated wherever a typed module exists.
 
 Initialize the `RazorpayClient` with your Razorpay API key, secret, and environment. This client will be your gateway to interacting with the Razorpay API.
 

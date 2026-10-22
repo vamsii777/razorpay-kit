@@ -228,7 +228,7 @@ public struct PaymentLink: Sendable, Hashable, Identifiable, Codable {
         }
     }
 
-    /// Where ``RazorpayClient/PaymentLinks/notify(_:via:options:)`` resends the link.
+    /// Where `paymentLinks.notify(_:via:options:)` resends the link.
     public struct Medium: RazorpayStringEnum {
         public let rawValue: String
         public init(rawValue: String) { self.rawValue = rawValue }
