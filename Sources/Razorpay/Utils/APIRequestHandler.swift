@@ -11,32 +11,11 @@ internal enum APIRequestHandler {
         do {
             let response = try await operation()
             
-            // If response is an error response, throw it directly
-            if let errorDict = response["error"] as? [String: Any] {
-                // Create APIError manually to avoid decoding issues
-                let code = (errorDict["code"] as? String).flatMap { 
-                    RazorpayError.APIError.ErrorCode(rawValue: $0) 
-                } ?? .unknown
-                let description = errorDict["description"] as? String ?? "Unknown error"
-                let source = errorDict["source"] as? String ?? "business"
-                let step = errorDict["step"] as? String ?? "payment_initiation"
-                let reason = errorDict["reason"] as? String ?? "unknown"
-                let field = errorDict["field"] as? String
-                let metadata = (errorDict["metadata"] as? [String: Any])?.compactMapValues { "\($0)" } ?? [:]
-                
-                let error = RazorpayError.APIError(
-                    code: code,
-                    description: description,
-                    source: source,
-                    step: step,
-                    reason: reason,
-                    field: field,
-                    metadata: metadata
-                )
-
-                throw RazorpayError.apiError(error)
+            // Defensive: RazorpayKit already throws for non-2xx and for `error` payloads.
+            if let apiError = RazorpayError.APIError(errorObject: response, statusCode: nil) {
+                throw RazorpayError.apiError(apiError)
             }
-            
+
             return try T(response: response)
         } catch let error as RazorpayError {
             throw error
@@ -82,19 +61,3 @@ public extension RazorpayResponse {
         self = try decoder.decode(Self.self, from: data)
     }
 }
-
-/// Structure to represent Razorpay API error responses in a Sendable way
-private struct RazorpayKitErrorResponse: Sendable {
-    let code: String
-    let description: String
-    let source: String
-    let step: String
-    let reason: String
-    let field: String?
-    let metadata: [String: String]
-}
-
-/// Error type for RazorpayKit specific errors
-private enum RazorpayKitError: Error, Sendable {
-    case apiError(RazorpayKitErrorResponse)
-} 
