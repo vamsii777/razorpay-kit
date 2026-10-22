@@ -2,7 +2,7 @@ import Foundation
 import RazorpayCore
 
 /// A payment-method downtime reported by Razorpay: a bank, card network, issuer or UPI app that
-/// is (or will be) failing. Poll ``RazorpayClient/Payments/downtimes(options:)`` or listen for the
+/// is (or will be) failing. Poll `payments.downtimes(options:)` or listen for the
 /// `payment.downtime.*` webhooks to hide affected methods at checkout.
 /// See https://razorpay.com/docs/api/payments/downtime/.
 public struct Downtime: Sendable, Hashable, Identifiable, Codable {

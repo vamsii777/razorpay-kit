@@ -22,6 +22,7 @@ error you ever see is ``RazorpayError``. On Swift 6 compilers that's enforced wi
 
 ### Essentials
 - <doc:GettingStarted>
+- <doc:ChoosingModules>
 - ``RazorpayClient``
 - ``RequestOptions``
 

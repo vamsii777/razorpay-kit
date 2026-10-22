@@ -38,7 +38,7 @@ public struct Token: Sendable, Hashable, Identifiable, Codable {
         public static let failed: Self = "failed"
     }
 
-    /// The card behind a card token. Tokens never carry a card ID, so this isn't a ``Card``.
+    /// The card behind a card token. Tokens never carry a card ID, so this isn't a `Card`.
     public struct CardInfo: Sendable, Hashable, Codable {
         public let name: String?
         public let last4: String?
