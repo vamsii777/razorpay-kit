@@ -96,3 +96,34 @@ struct SmartCollectAPITests {
         #expect(calls.contains("POST /v1/virtual_accounts/va_TEST000001/receivers") && calls.contains("POST /v1/virtual_accounts/va_TEST000001/close"))
     }
 }
+
+@Suite("Customer bank accounts")
+struct CustomerBankAccountTests {
+    @Test func addAndDelete() async throws {
+        let mock = MockTransport { request in
+            let json = request.method == .DELETE ? "" : #"{"id":"ba_TEST000001","entity":"bank_account","ifsc":"UTIB0000194","bank_name":"Axis Bank","name":"Test User","notes":[],"account_number":"916010082985661"}"#
+            return RazorpayHTTPResponse(status: .ok, body: Data(json.utf8))
+        }
+        let rzp = client(mock)
+        let ba = try await rzp.customers.addBankAccount(.init(ifsc: "utib0000194", accountNumber: "916010082985661", beneficiaryName: "Test User",
+                                                             address: .init(line1: "Line 1", city: "Bengaluru", pin: "560001")), to: "cust_TEST000001")
+        #expect(ba.id == "ba_TEST000001" && ba.bankName == "Axis Bank")
+        let body = try #require(try MockTransport.json(await mock.lastRequest?.body))
+        #expect(body["ifsc_code"] as? String == "UTIB0000194" && body["beneficiary_address1"] as? String == "Line 1" && body["beneficiary_state"] == nil)
+        #expect(await mock.lastRequest?.path == "/v1/customers/cust_TEST000001/bank_account")
+        try await rzp.customers.deleteBankAccount("ba_TEST000001", of: "cust_TEST000001")
+        #expect(await mock.lastRequest?.path == "/v1/customers/cust_TEST000001/bank_account/ba_TEST000001")
+    }
+
+    @Test func validation() async {
+        let mock = MockTransport()
+        let rzp = client(mock)
+        for bad in [Customer.NewBankAccount(ifsc: "X", accountNumber: "1", beneficiaryName: "A"),
+                    .init(ifsc: "UTIB0000194", accountNumber: "12a", beneficiaryName: "A"),
+                    .init(ifsc: "UTIB0000194", accountNumber: "12", beneficiaryName: " ")] {
+            await #expect(throws: RazorpayError.self) { try await rzp.customers.addBankAccount(bad, to: "cust_1") }
+        }
+        await #expect(throws: RazorpayError.self) { try await rzp.customers.deleteBankAccount("", of: "cust_1") }
+        #expect(await mock.requests.isEmpty)
+    }
+}
