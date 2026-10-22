@@ -1,277 +1,269 @@
 import Foundation
-/// Represents currencies supported by Razorpay for international payments
+
+/// An ISO 4217 currency code. Open: codes this SDK does not list still decode and round-trip.
 ///
-/// This enum contains all the currencies that can be used for payments through Razorpay's payment gateway.
-/// Each case represents a currency with its ISO 4217 currency code.
-///
-/// ## Usage Example
 /// ```swift
-/// let paymentData: [String: Any] = [
-///     "amount": 1000,
-///     "currency": Currency.indianRupee.rawValue
-/// ]
+/// let price = Money(amount: 49_900, currency: .inr)  // ₹499.00
 /// ```
-public enum Currency: String, Codable, CaseIterable, Sendable {
+/// See https://razorpay.com/docs/payments/international-payments/#supported-currencies.
+public struct Currency: RazorpayStringEnum {
+    public let rawValue: String
+
+    /// Creates a currency from its ISO code. The code is upper-cased.
+    public init(rawValue: String) { self.rawValue = rawValue.uppercased() }
+
     /// Indian Rupee (₹)
-    case indianRupee = "INR"
-    
+    public static let indianRupee = Self(rawValue: "INR")
     /// United States Dollar ($)
-    case usDollar = "USD"
-    
+    public static let usDollar = Self(rawValue: "USD")
     /// Euro (€)
-    case euro = "EUR"
-    
+    public static let euro = Self(rawValue: "EUR")
     /// British Pound Sterling (£)
-    case britishPound = "GBP"
-    
+    public static let britishPound = Self(rawValue: "GBP")
     /// Japanese Yen (¥)
-    case japaneseYen = "JPY"
-    
+    public static let japaneseYen = Self(rawValue: "JPY")
     /// Canadian Dollar (C$)
-    case canadianDollar = "CAD"
-    
+    public static let canadianDollar = Self(rawValue: "CAD")
     /// Australian Dollar (A$)
-    case australianDollar = "AUD"
-    
+    public static let australianDollar = Self(rawValue: "AUD")
     /// New Zealand Dollar (NZ$)
-    case newZealandDollar = "NZD"
-    
+    public static let newZealandDollar = Self(rawValue: "NZD")
     /// Singapore Dollar (S$)
-    case singaporeDollar = "SGD"
-    
+    public static let singaporeDollar = Self(rawValue: "SGD")
     /// Hong Kong Dollar (HK$)
-    case hongKongDollar = "HKD"
-    
+    public static let hongKongDollar = Self(rawValue: "HKD")
     /// Malaysian Ringgit (RM)
-    case malaysianRinggit = "MYR"
-    
+    public static let malaysianRinggit = Self(rawValue: "MYR")
     /// United Arab Emirates Dirham (د.إ)
-    case uaeDirham = "AED"
-    
+    public static let uaeDirham = Self(rawValue: "AED")
     /// Swiss Franc (Fr)
-    case swissFranc = "CHF"
-    
+    public static let swissFranc = Self(rawValue: "CHF")
     /// Chinese Yuan (¥)
-    case chineseYuan = "CNY"
-    
+    public static let chineseYuan = Self(rawValue: "CNY")
     /// South African Rand (R)
-    case southAfricanRand = "ZAR"
-    
+    public static let southAfricanRand = Self(rawValue: "ZAR")
     /// Sri Lankan Rupee (Rs)
-    case sriLankanRupee = "LKR"
-    
+    public static let sriLankanRupee = Self(rawValue: "LKR")
     /// Swedish Krona (kr)
-    case swedishKrona = "SEK"
-    
+    public static let swedishKrona = Self(rawValue: "SEK")
     /// Saudi Riyal (﷼)
-    case saudiRiyal = "SAR"
-    
+    public static let saudiRiyal = Self(rawValue: "SAR")
     /// Thai Baht (฿)
-    case thaiBaht = "THB"
-    
+    public static let thaiBaht = Self(rawValue: "THB")
     /// Russian Ruble (₽)
-    case russianRuble = "RUB"
-    
+    public static let russianRuble = Self(rawValue: "RUB")
     /// Turkish Lira (₺)
-    case turkishLira = "TRY"
-    
+    public static let turkishLira = Self(rawValue: "TRY")
     /// Israeli New Shekel (₪)
-    case israeliNewShekel = "ILS"
-    
+    public static let israeliNewShekel = Self(rawValue: "ILS")
     /// Danish Krone (kr)
-    case danishKrone = "DKK"
-    
+    public static let danishKrone = Self(rawValue: "DKK")
     /// Polish Złoty (zł)
-    case polishZloty = "PLN"
-    
+    public static let polishZloty = Self(rawValue: "PLN")
     /// Norwegian Krone (kr)
-    case norwegianKrone = "NOK"
-    
+    public static let norwegianKrone = Self(rawValue: "NOK")
     /// Hungarian Forint (Ft)
-    case hungarianForint = "HUF"
-    
+    public static let hungarianForint = Self(rawValue: "HUF")
     /// Czech Koruna (Kč)
-    case czechKoruna = "CZK"
-    
+    public static let czechKoruna = Self(rawValue: "CZK")
     /// Qatari Riyal (﷼)
-    case qatariRiyal = "QAR"
-    
+    public static let qatariRiyal = Self(rawValue: "QAR")
     /// Kuwaiti Dinar (د.ك)
-    case kuwaitiDinar = "KWD"
-    
+    public static let kuwaitiDinar = Self(rawValue: "KWD")
     /// Bahraini Dinar (.د.ب)
-    case bahrainiDinar = "BHD"
-    
+    public static let bahrainiDinar = Self(rawValue: "BHD")
     /// Omani Rial (﷼)
-    case omaniRial = "OMR"
-    
+    public static let omaniRial = Self(rawValue: "OMR")
     /// Mexican Peso ($)
-    case mexicanPeso = "MXN"
-    
+    public static let mexicanPeso = Self(rawValue: "MXN")
     /// Taiwan New Dollar (NT$)
-    case taiwanDollar = "TWD"
-    
+    public static let taiwanDollar = Self(rawValue: "TWD")
     /// South Korean Won (₩)
-    case southKoreanWon = "KRW"
-    
+    public static let southKoreanWon = Self(rawValue: "KRW")
     /// Indonesian Rupiah (Rp)
-    case indonesianRupiah = "IDR"
-    
+    public static let indonesianRupiah = Self(rawValue: "IDR")
     /// Philippine Peso (₱)
-    case philippinePeso = "PHP"
-    
+    public static let philippinePeso = Self(rawValue: "PHP")
     /// Vietnamese Dong (₫)
-    case vietnameseDong = "VND"
-    
+    public static let vietnameseDong = Self(rawValue: "VND")
     /// Bangladeshi Taka (৳)
-    case bangladeshiTaka = "BDT"
-    
+    public static let bangladeshiTaka = Self(rawValue: "BDT")
     /// Brazilian Real (R$)
-    case brazilianReal = "BRL"
-    
+    public static let brazilianReal = Self(rawValue: "BRL")
     /// Egyptian Pound (£)
-    case egyptianPound = "EGP"
-    
+    public static let egyptianPound = Self(rawValue: "EGP")
     /// Nigerian Naira (₦)
-    case nigerianNaira = "NGN"
-    
+    public static let nigerianNaira = Self(rawValue: "NGN")
     /// Ghanaian Cedi (₵)
-    case ghanaianCedi = "GHS"
-    
+    public static let ghanaianCedi = Self(rawValue: "GHS")
     /// Kenyan Shilling (KSh)
-    case kenyanShilling = "KES"
+    public static let kenyanShilling = Self(rawValue: "KES")
+
+    /// Shorthand for ``indianRupee``.
+    public static let inr = indianRupee
+    /// Shorthand for ``usDollar``.
+    public static let usd = usDollar
+
+    /// Every currency this SDK lists.
+    public static let allCases: [Currency] = [
+        .indianRupee,
+        .usDollar,
+        .euro,
+        .britishPound,
+        .japaneseYen,
+        .canadianDollar,
+        .australianDollar,
+        .newZealandDollar,
+        .singaporeDollar,
+        .hongKongDollar,
+        .malaysianRinggit,
+        .uaeDirham,
+        .swissFranc,
+        .chineseYuan,
+        .southAfricanRand,
+        .sriLankanRupee,
+        .swedishKrona,
+        .saudiRiyal,
+        .thaiBaht,
+        .russianRuble,
+        .turkishLira,
+        .israeliNewShekel,
+        .danishKrone,
+        .polishZloty,
+        .norwegianKrone,
+        .hungarianForint,
+        .czechKoruna,
+        .qatariRiyal,
+        .kuwaitiDinar,
+        .bahrainiDinar,
+        .omaniRial,
+        .mexicanPeso,
+        .taiwanDollar,
+        .southKoreanWon,
+        .indonesianRupiah,
+        .philippinePeso,
+        .vietnameseDong,
+        .bangladeshiTaka,
+        .brazilianReal,
+        .egyptianPound,
+        .nigerianNaira,
+        .ghanaianCedi,
+        .kenyanShilling
+    ]
 }
 
 extension Currency {
-    /// Returns a description of the currency including its name and code
-    public var description: String {
-        switch self {
-        case .indianRupee: return "Indian Rupee (INR)"
-        case .usDollar: return "US Dollar (USD)"
-        case .euro: return "Euro (EUR)"
-        case .britishPound: return "British Pound Sterling (GBP)"
-        case .japaneseYen: return "Japanese Yen (JPY)"
-        case .canadianDollar: return "Canadian Dollar (CAD)"
-        case .australianDollar: return "Australian Dollar (AUD)"
-        case .newZealandDollar: return "New Zealand Dollar (NZD)"
-        case .singaporeDollar: return "Singapore Dollar (SGD)"
-        case .hongKongDollar: return "Hong Kong Dollar (HKD)"
-        case .malaysianRinggit: return "Malaysian Ringgit (MYR)"
-        case .uaeDirham: return "UAE Dirham (AED)"
-        case .swissFranc: return "Swiss Franc (CHF)"
-        case .chineseYuan: return "Chinese Yuan (CNY)"
-        case .southAfricanRand: return "South African Rand (ZAR)"
-        case .sriLankanRupee: return "Sri Lankan Rupee (LKR)"
-        case .swedishKrona: return "Swedish Krona (SEK)"
-        case .saudiRiyal: return "Saudi Riyal (SAR)"
-        case .thaiBaht: return "Thai Baht (THB)"
-        case .russianRuble: return "Russian Ruble (RUB)"
-        case .turkishLira: return "Turkish Lira (TRY)"
-        case .israeliNewShekel: return "Israeli New Shekel (ILS)"
-        case .danishKrone: return "Danish Krone (DKK)"
-        case .polishZloty: return "Polish Złoty (PLN)"
-        case .norwegianKrone: return "Norwegian Krone (NOK)"
-        case .hungarianForint: return "Hungarian Forint (HUF)"
-        case .czechKoruna: return "Czech Koruna (CZK)"
-        case .qatariRiyal: return "Qatari Riyal (QAR)"
-        case .kuwaitiDinar: return "Kuwaiti Dinar (KWD)"
-        case .bahrainiDinar: return "Bahraini Dinar (BHD)"
-        case .omaniRial: return "Omani Rial (OMR)"
-        case .mexicanPeso: return "Mexican Peso (MXN)"
-        case .taiwanDollar: return "Taiwan New Dollar (TWD)"
-        case .southKoreanWon: return "South Korean Won (KRW)"
-        case .indonesianRupiah: return "Indonesian Rupiah (IDR)"
-        case .philippinePeso: return "Philippine Peso (PHP)"
-        case .vietnameseDong: return "Vietnamese Dong (VND)"
-        case .bangladeshiTaka: return "Bangladeshi Taka (BDT)"
-        case .brazilianReal: return "Brazilian Real (BRL)"
-        case .egyptianPound: return "Egyptian Pound (EGP)"
-        case .nigerianNaira: return "Nigerian Naira (NGN)"
-        case .ghanaianCedi: return "Ghanaian Cedi (GHS)"
-        case .kenyanShilling: return "Kenyan Shilling (KES)"
-        }
-    }
-    
-    /// The exponent for the currency, indicating the number of decimal places
-    /// Used to convert currency units to their smallest denomination
-    /// For example:
-    /// - INR has exponent 2, so ₹1 = 100 paise
-    /// - JPY has exponent 0, so ¥1 = 1 yen
+    private static let zeroDecimal: Set<String> = ["JPY", "HUF", "TWD", "KRW", "IDR", "VND"]
+    private static let threeDecimal: Set<String> = ["BHD", "KWD", "OMR"]
+    private static let names: [String: String] = [
+        "INR": "Indian Rupee (INR)",
+        "USD": "US Dollar (USD)",
+        "EUR": "Euro (EUR)",
+        "GBP": "British Pound Sterling (GBP)",
+        "JPY": "Japanese Yen (JPY)",
+        "CAD": "Canadian Dollar (CAD)",
+        "AUD": "Australian Dollar (AUD)",
+        "NZD": "New Zealand Dollar (NZD)",
+        "SGD": "Singapore Dollar (SGD)",
+        "HKD": "Hong Kong Dollar (HKD)",
+        "MYR": "Malaysian Ringgit (MYR)",
+        "AED": "UAE Dirham (AED)",
+        "CHF": "Swiss Franc (CHF)",
+        "CNY": "Chinese Yuan (CNY)",
+        "ZAR": "South African Rand (ZAR)",
+        "LKR": "Sri Lankan Rupee (LKR)",
+        "SEK": "Swedish Krona (SEK)",
+        "SAR": "Saudi Riyal (SAR)",
+        "THB": "Thai Baht (THB)",
+        "RUB": "Russian Ruble (RUB)",
+        "TRY": "Turkish Lira (TRY)",
+        "ILS": "Israeli New Shekel (ILS)",
+        "DKK": "Danish Krone (DKK)",
+        "PLN": "Polish Złoty (PLN)",
+        "NOK": "Norwegian Krone (NOK)",
+        "HUF": "Hungarian Forint (HUF)",
+        "CZK": "Czech Koruna (CZK)",
+        "QAR": "Qatari Riyal (QAR)",
+        "KWD": "Kuwaiti Dinar (KWD)",
+        "BHD": "Bahraini Dinar (BHD)",
+        "OMR": "Omani Rial (OMR)",
+        "MXN": "Mexican Peso (MXN)",
+        "TWD": "Taiwan New Dollar (TWD)",
+        "KRW": "South Korean Won (KRW)",
+        "IDR": "Indonesian Rupiah (IDR)",
+        "PHP": "Philippine Peso (PHP)",
+        "VND": "Vietnamese Dong (VND)",
+        "BDT": "Bangladeshi Taka (BDT)",
+        "BRL": "Brazilian Real (BRL)",
+        "EGP": "Egyptian Pound (EGP)",
+        "NGN": "Nigerian Naira (NGN)",
+        "GHS": "Ghanaian Cedi (GHS)",
+        "KES": "Kenyan Shilling (KES)"
+    ]
+    private static let symbols: [String: String] = [
+        "INR": "₹",
+        "USD": "$",
+        "MXN": "$",
+        "EUR": "€",
+        "GBP": "£",
+        "EGP": "£",
+        "JPY": "¥",
+        "CNY": "¥",
+        "MYR": "RM",
+        "AED": "د.إ",
+        "CHF": "Fr",
+        "ZAR": "R",
+        "LKR": "Rs",
+        "SEK": "kr",
+        "NOK": "kr",
+        "DKK": "kr",
+        "SAR": "﷼",
+        "QAR": "﷼",
+        "OMR": "﷼",
+        "THB": "฿",
+        "RUB": "₽",
+        "TRY": "₺",
+        "ILS": "₪",
+        "PLN": "zł",
+        "HUF": "Ft",
+        "CZK": "Kč",
+        "KWD": "د.ك",
+        "BHD": ".د.ب",
+        "TWD": "NT$",
+        "KRW": "₩",
+        "IDR": "Rp",
+        "PHP": "₱",
+        "VND": "₫",
+        "BDT": "৳",
+        "BRL": "R$",
+        "NGN": "₦",
+        "GHS": "₵",
+        "KES": "KSh"
+    ]
+
+    /// A readable name such as `Indian Rupee (INR)`. Unknown codes return the code.
+    public var displayName: String { Self.names[rawValue] ?? rawValue }
+
+    /// The symbol, for example `₹`. Unknown codes return the code.
+    public var symbol: String { Self.symbols[rawValue] ?? rawValue }
+
+    /// Decimal places in the minor unit: 2 for INR (paise), 0 for JPY, 3 for KWD.
     public var exponent: Int {
-        switch self {
-        // Zero decimal currencies
-        case .japaneseYen, .hungarianForint, .taiwanDollar, .southKoreanWon, 
-             .indonesianRupiah, .vietnameseDong:
-            return 0
-            
-        // Three decimal currencies
-        case .bahrainiDinar, .kuwaitiDinar, .omaniRial:
-            return 3
-            
-        // Two decimal currencies (most common)
-        default:
-            return 2
-        }
+        if Self.zeroDecimal.contains(rawValue) { return 0 }
+        if Self.threeDecimal.contains(rawValue) { return 3 }
+        return 2
     }
-    
-    /// Converts a decimal amount to the smallest currency unit
-    /// For example:
-    /// - convertToSmallestUnit(10.5) for INR returns 1050 (paise)
-    /// - convertToSmallestUnit(10.5) for JPY returns 10 (yen)
-    /// - convertToSmallestUnit(10.5) for BHD returns 10500 (fils)
+
+    /// Converts a major-unit amount to minor units, rounding half-up. `10.5` INR → `1050`.
     public func convertToSmallestUnit(_ amount: Decimal) -> Int {
-        let multiplier = Decimal(pow(10.0, Double(exponent)))
-        return NSDecimalNumber(decimal: amount * multiplier).intValue
+        var scaled = amount * pow(Decimal(10), exponent)
+        var rounded = Decimal()
+        NSDecimalRound(&rounded, &scaled, 0, .plain)
+        return NSDecimalNumber(decimal: rounded).intValue
     }
-    
-    /// Converts an amount in smallest currency unit back to decimal
-    /// For example:
-    /// - convertFromSmallestUnit(1050) for INR returns 10.50 (rupees)
-    /// - convertFromSmallestUnit(10) for JPY returns 10.00 (yen)
-    /// - convertFromSmallestUnit(10500) for BHD returns 10.500 (dinar)
+
+    /// Converts minor units to a major-unit amount. `1050` INR → `10.5`.
     public func convertFromSmallestUnit(_ amount: Int) -> Decimal {
-        let divisor = Decimal(pow(10.0, Double(exponent)))
-        return Decimal(amount) / divisor
+        Decimal(amount) / pow(Decimal(10), exponent)
     }
 }
-
-// Example usage extension
-extension Currency {
-    /// Returns the symbol for the currency
-    public var symbol: String {
-        switch self {
-        case .indianRupee: return "₹"
-        case .usDollar, .mexicanPeso: return "$"
-        case .euro: return "€"
-        case .britishPound, .egyptianPound: return "£"
-        case .japaneseYen, .chineseYuan: return "¥"
-        case .malaysianRinggit: return "RM"
-        case .uaeDirham: return "د.إ"
-        case .swissFranc: return "Fr"
-        case .southAfricanRand: return "R"
-        case .sriLankanRupee: return "Rs"
-        case .swedishKrona, .norwegianKrone, .danishKrone: return "kr"
-        case .saudiRiyal, .qatariRiyal, .omaniRial: return "﷼"
-        case .thaiBaht: return "฿"
-        case .russianRuble: return "₽"
-        case .turkishLira: return "₺"
-        case .israeliNewShekel: return "₪"
-        case .polishZloty: return "zł"
-        case .hungarianForint: return "Ft"
-        case .czechKoruna: return "Kč"
-        case .kuwaitiDinar: return "د.ك"
-        case .bahrainiDinar: return ".د.ب"
-        case .taiwanDollar: return "NT$"
-        case .southKoreanWon: return "₩"
-        case .indonesianRupiah: return "Rp"
-        case .philippinePeso: return "₱"
-        case .vietnameseDong: return "₫"
-        case .bangladeshiTaka: return "৳"
-        case .brazilianReal: return "R$"
-        case .nigerianNaira: return "₦"
-        case .ghanaianCedi: return "₵"
-        case .kenyanShilling: return "KSh"
-        default: return self.rawValue
-        }
-    }
-} 
