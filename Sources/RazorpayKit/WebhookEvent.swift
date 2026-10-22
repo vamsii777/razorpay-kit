@@ -8,8 +8,6 @@ import RazorpayPaymentLinks
 import RazorpayQRCodes
 import RazorpayRoute
 import RazorpaySmartCollect
-import RazorpaySubscriptions
-import RazorpayInvoices
 
 /// Every webhook this SDK models, as one exhaustive enum. Available with `import RazorpayKit`.
 ///
@@ -48,19 +46,7 @@ public enum WebhookEvent: Sendable, Hashable {
     case transferReversed(Transfer)
     case virtualAccountCreated(VirtualAccount)
     case virtualAccountCredited(VirtualAccount, Payment?, BankTransfer?)
-    case subscriptionAuthenticated(Subscription, Payment?)
-    case subscriptionActivated(Subscription, Payment?)
-    case subscriptionCharged(Subscription, Payment?)
-    case subscriptionCompleted(Subscription, Payment?)
-    case subscriptionUpdated(Subscription, Payment?)
-    case subscriptionPending(Subscription, Payment?)
-    case subscriptionHalted(Subscription, Payment?)
-    case subscriptionCancelled(Subscription, Payment?)
-    case subscriptionPaused(Subscription, Payment?)
-    case subscriptionResumed(Subscription, Payment?)
-    case invoicePaid(Invoice, Payment?)
-    case invoicePartiallyPaid(Invoice, Payment?)
-    case invoiceExpired(Invoice)
+    case virtualAccountClosed(VirtualAccount)
     /// An event this SDK does not model yet, with its raw `payload`.
     case unknown(name: String, payload: JSONValue)
 
@@ -92,19 +78,7 @@ public enum WebhookEvent: Sendable, Hashable {
         case .transferReversed: return RazorpayWebhook.Name.transferReversed.rawValue
         case .virtualAccountCreated: return RazorpayWebhook.Name.virtualAccountCreated.rawValue
         case .virtualAccountCredited: return RazorpayWebhook.Name.virtualAccountCredited.rawValue
-        case .subscriptionAuthenticated: return RazorpayWebhook.Name.subscriptionAuthenticated.rawValue
-        case .subscriptionActivated: return RazorpayWebhook.Name.subscriptionActivated.rawValue
-        case .subscriptionCharged: return RazorpayWebhook.Name.subscriptionCharged.rawValue
-        case .subscriptionCompleted: return RazorpayWebhook.Name.subscriptionCompleted.rawValue
-        case .subscriptionUpdated: return RazorpayWebhook.Name.subscriptionUpdated.rawValue
-        case .subscriptionPending: return RazorpayWebhook.Name.subscriptionPending.rawValue
-        case .subscriptionHalted: return RazorpayWebhook.Name.subscriptionHalted.rawValue
-        case .subscriptionCancelled: return RazorpayWebhook.Name.subscriptionCancelled.rawValue
-        case .subscriptionPaused: return RazorpayWebhook.Name.subscriptionPaused.rawValue
-        case .subscriptionResumed: return RazorpayWebhook.Name.subscriptionResumed.rawValue
-        case .invoicePaid: return RazorpayWebhook.Name.invoicePaid.rawValue
-        case .invoicePartiallyPaid: return RazorpayWebhook.Name.invoicePartiallyPaid.rawValue
-        case .invoiceExpired: return RazorpayWebhook.Name.invoiceExpired.rawValue
+        case .virtualAccountClosed: return RazorpayWebhook.Name.virtualAccountClosed.rawValue
         case .unknown(let name, _): return name
         }
     }
@@ -121,7 +95,7 @@ public enum WebhookEvent: Sendable, Hashable {
     public var payment: Payment? {
         switch self {
         case .paymentAuthorized(let p), .paymentCaptured(let p), .paymentFailed(let p), .orderPaid(_, let p): return p
-        case .paymentLinkPaid(_, let p), .paymentLinkPartiallyPaid(_, let p), .qrCodeCredited(_, let p), .virtualAccountCredited(_, let p, _), .subscriptionAuthenticated(_, let p), .subscriptionActivated(_, let p), .subscriptionCharged(_, let p), .subscriptionCompleted(_, let p), .subscriptionUpdated(_, let p), .subscriptionPending(_, let p), .subscriptionHalted(_, let p), .subscriptionCancelled(_, let p), .subscriptionPaused(_, let p), .subscriptionResumed(_, let p), .invoicePaid(_, let p), .invoicePartiallyPaid(_, let p): return p
+        case .paymentLinkPaid(_, let p), .paymentLinkPartiallyPaid(_, let p), .qrCodeCredited(_, let p), .virtualAccountCredited(_, let p, _): return p
         default: return nil
         }
     }
@@ -161,19 +135,7 @@ public enum WebhookEvent: Sendable, Hashable {
         case .virtualAccountCreated: return e(VirtualAccount.self).map(Self.virtualAccountCreated)
         case .virtualAccountCredited:
             return e(VirtualAccount.self).flatMap { va in o(Payment.self).flatMap { p in o(BankTransfer.self).map { .virtualAccountCredited(va, p, $0) } } }
-        case .subscriptionAuthenticated: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionAuthenticated(s, $0) } }
-        case .subscriptionActivated: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionActivated(s, $0) } }
-        case .subscriptionCharged: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionCharged(s, $0) } }
-        case .subscriptionCompleted: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionCompleted(s, $0) } }
-        case .subscriptionUpdated: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionUpdated(s, $0) } }
-        case .subscriptionPending: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionPending(s, $0) } }
-        case .subscriptionHalted: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionHalted(s, $0) } }
-        case .subscriptionCancelled: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionCancelled(s, $0) } }
-        case .subscriptionPaused: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionPaused(s, $0) } }
-        case .subscriptionResumed: return e(Subscription.self).flatMap { s in o(Payment.self).map { .subscriptionResumed(s, $0) } }
-        case .invoicePaid: return e(Invoice.self).flatMap { i in o(Payment.self).map { .invoicePaid(i, $0) } }
-        case .invoicePartiallyPaid: return e(Invoice.self).flatMap { i in o(Payment.self).map { .invoicePartiallyPaid(i, $0) } }
-        case .invoiceExpired: return e(Invoice.self).map(Self.invoiceExpired)
+        case .virtualAccountClosed: return e(VirtualAccount.self).map(Self.virtualAccountClosed)
         default: return .success(.unknown(name: w.name.rawValue, payload: w.payload))
         }
     }

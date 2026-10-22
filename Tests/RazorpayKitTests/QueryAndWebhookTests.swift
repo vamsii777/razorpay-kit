@@ -2,6 +2,7 @@ import XCTest
 import Foundation
 import RazorpayKit
 @testable import RazorpayCore
+@testable import RazorpayLegacy
 @testable import RazorpayVerification
 
 final class QueryAndWebhookTests: XCTestCase {
@@ -34,7 +35,7 @@ final class QueryAndWebhookTests: XCTestCase {
 
     func testRequestURLUsesEncodedQueryViaTransport() async throws {
         let mock = MockTransport(json: #"{"entity":"collection","count":0,"items":[]}"#)
-        _ = try await makeClient(mock).payment.all(queryParams: ["expand[]": "card", "from": "1 2"], extraHeaders: nil)
+        _ = try await RazorpayPaymentRoutes(client: makeClient(mock).handler).all(queryParams: ["expand[]": "card", "from": "1 2"], extraHeaders: nil)
         let requestValue = await mock.lastRequest
         let request = try XCTUnwrap(requestValue)
         XCTAssertEqual(request.url, "https://api.razorpay.com/v1/payments?expand%5B%5D=card&from=1%202")

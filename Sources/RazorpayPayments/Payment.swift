@@ -2,7 +2,7 @@ import Foundation
 import RazorpayCore
 
 /// A Razorpay payment. See https://razorpay.com/docs/api/payments/.
-public struct Payment: Sendable, Hashable, Identifiable, Decodable {
+public struct Payment: Sendable, Hashable, Identifiable, Codable {
     public typealias ID = PaymentID
 
     public let id: ID
@@ -121,4 +121,42 @@ extension RazorpayWebhook.Name {
     public static let paymentAuthorized: Self = "payment.authorized"
     public static let paymentCaptured: Self = "payment.captured"
     public static let paymentFailed: Self = "payment.failed"
+}
+
+extension Payment {
+    /// Encodes Razorpay's wire shape (including the flat `error_*` fields), so a decoded payment round-trips.
+    public func encode(to encoder: any Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encodeMoney(amount, .amount)
+        try c.encode(amount.currency, forKey: .currency)
+        try c.encode(status, forKey: .status)
+        try c.encodeIfPresent(method, forKey: .method)
+        try c.encodeIfPresent(orderID, forKey: .orderID)
+        try c.encodeIfPresent(customerID, forKey: .customerID)
+        try c.encodeIfPresent(invoiceID, forKey: .invoiceID)
+        try c.encodeIfPresent(description, forKey: .description)
+        try c.encode(international, forKey: .international)
+        try c.encode(captured, forKey: .captured)
+        try c.encodeMoney(amountRefunded, .amountRefunded)
+        try c.encodeIfPresent(refundStatus, forKey: .refundStatus)
+        try c.encodeIfPresent(email, forKey: .email)
+        try c.encodeIfPresent(contact, forKey: .contact)
+        try c.encodeIfPresent(bank, forKey: .bank)
+        try c.encodeIfPresent(wallet, forKey: .wallet)
+        try c.encodeIfPresent(vpa, forKey: .vpa)
+        try c.encodeIfPresent(cardID, forKey: .cardID)
+        try c.encodeMoney(fee, .fee)
+        try c.encodeMoney(tax, .tax)
+        try c.encode(notes, forKey: .notes)
+        try c.encode(acquirerData, forKey: .acquirerData)
+        try c.encode(createdAt, forKey: .createdAt)
+        if let failure {
+            try c.encodeIfPresent(failure.code?.rawValue, forKey: .errorCode)
+            try c.encode(failure.description, forKey: .errorDescription)
+            try c.encodeIfPresent(failure.source, forKey: .errorSource)
+            try c.encodeIfPresent(failure.step, forKey: .errorStep)
+            try c.encodeIfPresent(failure.reason, forKey: .errorReason)
+        }
+    }
 }
