@@ -113,14 +113,18 @@ public struct RazorpayClient: Sendable {
     public var webhook: RazorpayWebhookRoutes
 
     var handler: RazorpayAPIHandler
+    /// Secrets used only for local signature checks. Never exposed via description or mirror.
+    let signing: SigningSecrets
     
     /// Creates a new Razorpay API client.
     /// - Parameters:
     ///   - httpClient: The HTTP client to use for making requests
     ///   - key: Your Razorpay API key
     ///   - secret: Your Razorpay API secret
-    public init(_ httpClient: HTTPClient = HTTPClient.shared, key: String, secret: String) {
-        self.init(transport: AsyncHTTPClientTransport(httpClient: httpClient), key: key, secret: secret)
+    ///   - webhookSecret: The secret set on your webhook in the Dashboard. Needed for
+    ///     ``Webhooks-swift.struct/verify(_:signature:secret:)``.
+    public init(_ httpClient: HTTPClient = HTTPClient.shared, key: String, secret: String, webhookSecret: String? = nil) {
+        self.init(transport: AsyncHTTPClientTransport(httpClient: httpClient), key: key, secret: secret, webhookSecret: webhookSecret)
     }
 
     /// Creates a client that sends every request through a custom transport.
@@ -131,8 +135,10 @@ public struct RazorpayClient: Sendable {
     ///   - transport: The transport that sends requests.
     ///   - key: Your Razorpay API key ID.
     ///   - secret: Your Razorpay API key secret.
-    public init(transport: any RazorpayTransport, key: String, secret: String) {
+    ///   - webhookSecret: The webhook secret from the Dashboard, used by ``webhooks``.
+    public init(transport: any RazorpayTransport, key: String, secret: String, webhookSecret: String? = nil) {
         self.handler = RazorpayAPIHandler(transport: transport, key: key, secret: secret)
+        self.signing = SigningSecrets(keySecret: secret, webhookSecret: webhookSecret)
         account = RazorpayAccountRoutes(client: handler)
         addon = RazorpayAddonRoutes(client: handler)
         card = RazorpayCardRoutes(client: handler)
@@ -166,4 +172,13 @@ extension RazorpayClient: CustomStringConvertible, CustomDebugStringConvertible,
     public var customMirror: Mirror {
         Mirror(self, children: ["credentials": "<redacted>"], displayStyle: .struct)
     }
+}
+
+/// Holds signing secrets and hides them from `print`, `dump` and string interpolation.
+struct SigningSecrets: Sendable, CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    let keySecret: String
+    let webhookSecret: String?
+    var description: String { "SigningSecrets(<redacted>)" }
+    var debugDescription: String { description }
+    var customMirror: Mirror { Mirror(self, children: [], displayStyle: .struct) }
 }
