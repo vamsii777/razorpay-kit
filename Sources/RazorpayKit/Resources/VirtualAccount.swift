@@ -32,7 +32,7 @@ public protocol VirtualAccountRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `VirtualAccountRoutes` protocol for Razorpay virtual account operations.
-public struct RazorpayVirtualAccountRoutes: VirtualAccountRoutes {
+public struct RazorpayVirtualAccountRoutes: VirtualAccountRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 
@@ -54,14 +54,14 @@ public struct RazorpayVirtualAccountRoutes: VirtualAccountRoutes {
 
     public func create(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.virtualAccountURL)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
     public func close(virtualAccID: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.virtualAccountURL)/\(virtualAccID)/close"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -74,14 +74,14 @@ public struct RazorpayVirtualAccountRoutes: VirtualAccountRoutes {
 
     public func addReceiver(virtualAccID: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.virtualAccountURL)/\(virtualAccID)/receivers"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
     public func allowedPayer(virtualAccID: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.virtualAccountURL)/\(virtualAccID)/allowed_payers"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }

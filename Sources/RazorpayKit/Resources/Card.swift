@@ -14,7 +14,7 @@ public protocol CardRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `CardRoutes` protocol for Razorpay card operations.
-public struct RazorpayCardRoutes: CardRoutes {
+public struct RazorpayCardRoutes: CardRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 
@@ -30,7 +30,7 @@ public struct RazorpayCardRoutes: CardRoutes {
 
     public func requestCardReference(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.cardURL)/fingerprints"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }

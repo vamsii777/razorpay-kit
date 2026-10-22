@@ -2,7 +2,7 @@ import Foundation
 import RazorpayKit
 
 // MARK: - NotesData
-public enum NotesData: Codable {
+public enum NotesData: Codable, Sendable {
     case array([String])
     case dictionary([String: String?])
     
@@ -32,7 +32,7 @@ public enum NotesData: Codable {
 }
 
 // MARK: - Webhook Event
-public struct WebhookEvent: Codable {
+public struct WebhookEvent: Codable, Sendable {
     public let entity: String
     public let accountId: String
     public let event: EventType
@@ -51,7 +51,7 @@ public struct WebhookEvent: Codable {
 }
 
 // MARK: - EventType
-public enum EventType: String, Codable {
+public enum EventType: String, Codable, Sendable {
     case paymentAuthorized = "payment.authorized"
     case paymentCaptured = "payment.captured"
     case paymentFailed = "payment.failed"
@@ -66,7 +66,7 @@ public enum EventType: String, Codable {
 }
 
 // MARK: - Payload
-public struct Payload: Codable {
+public struct Payload: Codable, Sendable {
     public let payment: PaymentEvent?
     public let paymentDowntime: PaymentDowntimeEvent?
     public let order: OrderEvent?
@@ -81,12 +81,12 @@ public struct Payload: Codable {
 }
 
 // MARK: - PaymentEvent
-public struct PaymentEvent: Codable {
+public struct PaymentEvent: Codable, Sendable {
     public let entity: PaymentEntity
 }
 
 // MARK: - PaymentEntity
-public struct PaymentEntity: Codable {
+public struct PaymentEntity: Codable, Sendable {
     public let id: String
     public let entity: String
     public let amount: Int
@@ -155,12 +155,12 @@ public struct PaymentEntity: Codable {
 }
 
 // MARK: - PaymentDowntimeEvent
-public struct PaymentDowntimeEvent: Codable {
+public struct PaymentDowntimeEvent: Codable, Sendable {
     public let entity: DowntimeEntity
 }
 
 // MARK: - DowntimeEntity
-public struct DowntimeEntity: Codable {
+public struct DowntimeEntity: Codable, Sendable {
     public let id: String
     public let entity: String
     public let method: String
@@ -191,17 +191,17 @@ public struct DowntimeEntity: Codable {
 }
 
 // MARK: - Instrument
-public struct Instrument: Codable {
+public struct Instrument: Codable, Sendable {
     public let bank: String?
 }
 
 // MARK: - OrderEvent
-public struct OrderEvent: Codable {
+public struct OrderEvent: Codable, Sendable {
     public let entity: OrderEntity
 }
 
 // MARK: - OrderEntity
-public struct OrderEntity: Codable {
+public struct OrderEntity: Codable, Sendable {
     public let id: String
     public let entity: String
     public let amount: Int
@@ -232,12 +232,12 @@ public struct OrderEntity: Codable {
 }
 
 // MARK: - RefundEvent
-public struct RefundEvent: Codable {
+public struct RefundEvent: Codable, Sendable {
     public let entity: RefundEntity
 }
 
 // MARK: - RefundEntity
-public struct RefundEntity: Codable {
+public struct RefundEntity: Codable, Sendable {
     public let id: String
     public let entity: String
     public let amount: Int
