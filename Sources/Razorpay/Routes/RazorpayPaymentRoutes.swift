@@ -2,7 +2,7 @@ import Foundation
 import RazorpayKit
 
 /// Details that can be expanded in payment responses
-public enum PaymentExpansion: String {
+public enum PaymentExpansion: String, Sendable {
     /// Expand card details
     case card
     /// Expand EMI details
@@ -65,7 +65,7 @@ public protocol RazorpayPaymentRoutes: Sendable {
 }
 
 /// Implementation of RazorpayPaymentRoutes using RazorpayKit
-public struct RazorpayKitPaymentRoutes: RazorpayPaymentRoutes {
+public struct RazorpayKitPaymentRoutes: RazorpayPaymentRoutes, Sendable {
     private let client: RazorpayClient
     
     public init(client: RazorpayClient) {

@@ -23,7 +23,7 @@ public protocol WebhookRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `WebhookRoutes` protocol for Razorpay webhook operations.
-public struct RazorpayWebhookRoutes: WebhookRoutes {
+public struct RazorpayWebhookRoutes: WebhookRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 
@@ -33,7 +33,7 @@ public struct RazorpayWebhookRoutes: WebhookRoutes {
     
     public func create(accountId: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = accountId.isEmpty ? "\(APIConstants.v1)\(APIConstants.webhook)" : "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)\(APIConstants.webhook)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -46,7 +46,7 @@ public struct RazorpayWebhookRoutes: WebhookRoutes {
 
     public func edit(webhookId: String, accountId: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = accountId.isEmpty ? "\(APIConstants.v1)\(APIConstants.webhook)/\(accountId)" : "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)\(APIConstants.webhook)/\(webhookId)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let method = accountId.isEmpty ? HTTPMethod.PUT : HTTPMethod.PATCH
         let response = try await client.sendRequest(method: method, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)

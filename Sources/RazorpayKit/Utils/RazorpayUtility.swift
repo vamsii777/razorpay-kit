@@ -37,16 +37,20 @@ struct RZPRUTL {
     /// let response = // ... HTTP response ...
     /// let json = try await RZPRUTL.processResponse(response)
     /// ```
-    static func processResponse(_ response: HTTPClientResponse) async throws -> [String: Any] {
-        let body = try await response.body.collect(upTo: .max)
-        let data = body
-        
+    static func processResponse(_ response: RazorpayHTTPResponse) async throws -> [String: Any] {
+        let data = response.body
+
         guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
             throw RZPError.badRequestError(message: "INVALID_RESPONSE", internalErrorCode: nil, field: nil, description: nil, code: nil)
         }
         return json
     }
     
+    /// Serializes a JSON object into a request body.
+    static func jsonBody(_ json: [String: Any]) throws -> Data {
+        try JSONSerialization.data(withJSONObject: json, options: [])
+    }
+
     /// Converts a dictionary of query parameters to a URL query string.
     /// 
     /// - Parameter queryParams: An optional dictionary of string key-value pairs representing query parameters.

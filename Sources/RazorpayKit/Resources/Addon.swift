@@ -17,7 +17,7 @@ public protocol AddonRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `AddonRoutes` protocol for Razorpay addon operations.
-public struct RazorpayAddonRoutes: AddonRoutes {
+public struct RazorpayAddonRoutes: AddonRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 
