@@ -29,31 +29,30 @@ struct RZPRUTL {
     
     /// Turns an HTTP response into a JSON dictionary.
     ///
-    /// - Throws: ``RazorpayError/apiError(_:)`` with the HTTP status for any non-2xx response, or
-    ///   for a 2xx body that contains an `error` object. Throws ``RazorpayError/invalidResponse(_:)``
+    /// - Throws: ``RazorpayError/api(_:)`` with the HTTP status for any non-2xx response, or
+    ///   for a 2xx body that contains an `error` object. Throws ``RazorpayError/decoding(_:)``
     ///   if a 2xx body is not a JSON object.
     static func processResponse(_ response: RazorpayHTTPResponse) async throws -> [String: Any] {
         let status = Int(response.status.code)
-        let json = try? JSONSerialization.jsonObject(with: response.body, options: []) as? [String: Any]
-
         guard (200..<300).contains(status) else {
-            if let json, let apiError = RazorpayError.APIError(errorObject: json, statusCode: status) {
-                throw RazorpayError.apiError(apiError)
-            }
-            throw RazorpayError.apiError(.init(statusCode: status, description: "HTTP \(status) with an unparseable error body"))
+            throw RazorpayError.api(.init(statusCode: status, body: response.body))
         }
-        guard let json else {
-            throw RazorpayError.invalidResponse("Response body is not a JSON object (HTTP \(status))")
+        guard let json = (try? JSONSerialization.jsonObject(with: response.body)) as? [String: Any] else {
+            throw RazorpayError.decoding(.init(statusCode: status, type: "JSON object",
+                message: response.body.isEmpty ? "empty body" : "body is not a JSON object"))
         }
         if let apiError = RazorpayError.APIError(errorObject: json, statusCode: status) {
-            throw RazorpayError.apiError(apiError)
+            throw RazorpayError.api(apiError)
         }
         return json
     }
 
     /// Serializes a JSON object into a request body.
     static func jsonBody(_ json: [String: Any]) throws -> Data {
-        try JSONSerialization.data(withJSONObject: json, options: [])
+        guard JSONSerialization.isValidJSONObject(json) else {
+            throw RazorpayError.invalidRequest("request body is not valid JSON")
+        }
+        return try JSONSerialization.data(withJSONObject: json, options: [])
     }
 
     /// Converts a dictionary of query parameters to a URL query string.
