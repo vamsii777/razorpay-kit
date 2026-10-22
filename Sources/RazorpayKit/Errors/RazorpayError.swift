@@ -55,7 +55,7 @@ public enum RazorpayError: Error, Sendable {
     /// The error object Razorpay returns, plus the HTTP status.
     ///
     /// Fields Razorpay did not send are `nil`. No defaults are filled in.
-    public struct APIError: Sendable, Codable, Equatable {
+    public struct APIError: Sendable, Codable, Hashable {
         /// The HTTP status of the response, or `nil` when unknown.
         public let statusCode: Int?
         /// The error code, for example ``ErrorCode/badRequestError``. Unknown codes are kept.
