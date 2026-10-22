@@ -14,4 +14,6 @@
 @_exported import RazorpayProducts
 @_exported import RazorpayTokens
 @_exported import RazorpayCards
+@_exported import RazorpayPaymentLinks
+@_exported import RazorpayQRCodes
 @_exported import RazorpayLegacy
