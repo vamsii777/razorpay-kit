@@ -59,12 +59,22 @@ struct RZPRUTL {
     /// ```swift
     /// let params = ["page": "1", "limit": "10"]
     /// let queryString = RZPRUTL.convertToQueryString(params)
-    /// // Returns "?page=1&limit=10"
+    /// // Returns "?limit=10&page=1" (keys sorted, keys and values percent-encoded)
     /// ```
     static func convertToQueryString(_ queryParams: [String: String]?) -> String {
         guard let queryParams = queryParams, !queryParams.isEmpty else { return "" }
-        let queryItems = queryParams.map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")" }
+        let queryItems = queryParams
+            .sorted { $0.key < $1.key }
+            .map { "\(percentEncode($0.key))=\(percentEncode($0.value))" }
         return "?" + queryItems.joined(separator: "&")
+    }
+
+    /// RFC 3986 unreserved characters. Everything else, including `&`, `+`, `=`, `[`, `]`, and space, is percent-encoded.
+    private static var queryAllowed: CharacterSet { CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~") }
+
+    /// Percent-encodes a query key or value.
+    static func percentEncode(_ string: String) -> String {
+        string.addingPercentEncoding(withAllowedCharacters: queryAllowed) ?? string
     }
     
 }
