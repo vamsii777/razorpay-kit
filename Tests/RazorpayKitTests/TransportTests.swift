@@ -3,6 +3,7 @@ import Foundation
 import NIOHTTP1
 import RazorpayKit
 @testable import RazorpayCore
+@testable import RazorpayLegacy
 @testable import RazorpayVerification
 
 final class TransportTests: XCTestCase {
@@ -13,7 +14,7 @@ final class TransportTests: XCTestCase {
     func testCreateOrderSendsMethodPathAndBody() async throws {
         let mock = MockTransport(json: #"{"id":"order_TEST","entity":"order"}"#)
         let client = makeClient(mock)
-        let result = try await client.order.create(data: ["amount": 50000, "currency": "INR"], extraHeaders: nil)
+        let result = try await RazorpayOrderRoutes(client: client.handler).create(data: ["amount": 50000, "currency": "INR"], extraHeaders: nil)
         XCTAssertEqual(result["id"] as? String, "order_TEST")
 
         let requestValue = await mock.lastRequest
@@ -30,7 +31,7 @@ final class TransportTests: XCTestCase {
     func testFetchSendsQueryParameters() async throws {
         let mock = MockTransport(json: #"{"entity":"collection","count":0,"items":[]}"#)
         let client = makeClient(mock)
-        _ = try await client.order.all(queryParams: ["count": "10", "skip": "0"], extraHeaders: nil)
+        _ = try await RazorpayOrderRoutes(client: client.handler).all(queryParams: ["count": "10", "skip": "0"], extraHeaders: nil)
 
         let requestValue = await mock.lastRequest
         let request = try XCTUnwrap(requestValue)
@@ -43,7 +44,7 @@ final class TransportTests: XCTestCase {
     func testRequestsUseFixedHTTPSBaseURLAndBasicAuth() async throws {
         let mock = MockTransport()
         let client = makeClient(mock)
-        _ = try await client.order.fetch(orderID: "order_TEST", queryParams: nil, extraHeaders: ["X-Test": "1"])
+        _ = try await RazorpayOrderRoutes(client: client.handler).fetch(orderID: "order_TEST", queryParams: nil, extraHeaders: ["X-Test": "1"])
 
         let requestValue = await mock.lastRequest
         let request = try XCTUnwrap(requestValue)
@@ -60,7 +61,7 @@ final class TransportTests: XCTestCase {
         let mock = MockTransport { _ in throw Boom() }
         let client = makeClient(mock)
         do {
-            _ = try await client.order.fetch(orderID: "order_TEST", queryParams: nil, extraHeaders: nil)
+            _ = try await RazorpayOrderRoutes(client: client.handler).fetch(orderID: "order_TEST", queryParams: nil, extraHeaders: nil)
             XCTFail("expected an error")
         } catch RazorpayError.transport(let underlying) {
             XCTAssertTrue(underlying is Boom)

@@ -3,6 +3,11 @@ import RazorpayCore
 import RazorpayPayments
 import RazorpayOrders
 import RazorpayRefunds
+import RazorpayTokens
+import RazorpayPaymentLinks
+import RazorpayQRCodes
+import RazorpayRoute
+import RazorpaySmartCollect
 
 /// Every webhook this SDK models, as one exhaustive enum. Available with `import RazorpayKit`.
 ///
@@ -25,6 +30,23 @@ public enum WebhookEvent: Sendable, Hashable {
     case downtimeStarted(Downtime)
     case downtimeUpdated(Downtime)
     case downtimeResolved(Downtime)
+    case tokenConfirmed(Token)
+    case tokenRejected(Token)
+    case tokenPaused(Token)
+    case tokenCancelled(Token)
+    /// The link, and the payment that paid it when the payload includes one.
+    case paymentLinkPaid(PaymentLink, Payment?)
+    case paymentLinkPartiallyPaid(PaymentLink, Payment?)
+    case paymentLinkExpired(PaymentLink)
+    case paymentLinkCancelled(PaymentLink)
+    case qrCodeCredited(QRCode, Payment?)
+    case qrCodeClosed(QRCode)
+    case transferProcessed(Transfer)
+    case transferFailed(Transfer)
+    case transferReversed(Transfer)
+    case virtualAccountCreated(VirtualAccount)
+    case virtualAccountCredited(VirtualAccount, Payment?, BankTransfer?)
+    case virtualAccountClosed(VirtualAccount)
     /// An event this SDK does not model yet, with its raw `payload`.
     case unknown(name: String, payload: JSONValue)
 
@@ -41,6 +63,22 @@ public enum WebhookEvent: Sendable, Hashable {
         case .downtimeStarted: return RazorpayWebhook.Name.downtimeStarted.rawValue
         case .downtimeUpdated: return RazorpayWebhook.Name.downtimeUpdated.rawValue
         case .downtimeResolved: return RazorpayWebhook.Name.downtimeResolved.rawValue
+        case .tokenConfirmed: return RazorpayWebhook.Name.tokenConfirmed.rawValue
+        case .tokenRejected: return RazorpayWebhook.Name.tokenRejected.rawValue
+        case .tokenPaused: return RazorpayWebhook.Name.tokenPaused.rawValue
+        case .tokenCancelled: return RazorpayWebhook.Name.tokenCancelled.rawValue
+        case .paymentLinkPaid: return RazorpayWebhook.Name.paymentLinkPaid.rawValue
+        case .paymentLinkPartiallyPaid: return RazorpayWebhook.Name.paymentLinkPartiallyPaid.rawValue
+        case .paymentLinkExpired: return RazorpayWebhook.Name.paymentLinkExpired.rawValue
+        case .paymentLinkCancelled: return RazorpayWebhook.Name.paymentLinkCancelled.rawValue
+        case .qrCodeCredited: return RazorpayWebhook.Name.qrCodeCredited.rawValue
+        case .qrCodeClosed: return RazorpayWebhook.Name.qrCodeClosed.rawValue
+        case .transferProcessed: return RazorpayWebhook.Name.transferProcessed.rawValue
+        case .transferFailed: return RazorpayWebhook.Name.transferFailed.rawValue
+        case .transferReversed: return RazorpayWebhook.Name.transferReversed.rawValue
+        case .virtualAccountCreated: return RazorpayWebhook.Name.virtualAccountCreated.rawValue
+        case .virtualAccountCredited: return RazorpayWebhook.Name.virtualAccountCredited.rawValue
+        case .virtualAccountClosed: return RazorpayWebhook.Name.virtualAccountClosed.rawValue
         case .unknown(let name, _): return name
         }
     }
@@ -57,6 +95,7 @@ public enum WebhookEvent: Sendable, Hashable {
     public var payment: Payment? {
         switch self {
         case .paymentAuthorized(let p), .paymentCaptured(let p), .paymentFailed(let p), .orderPaid(_, let p): return p
+        case .paymentLinkPaid(_, let p), .paymentLinkPartiallyPaid(_, let p), .qrCodeCredited(_, let p), .virtualAccountCredited(_, let p, _): return p
         default: return nil
         }
     }
@@ -68,6 +107,7 @@ public enum WebhookEvent: Sendable, Hashable {
 
     static func result(_ w: RazorpayWebhook) -> Result<WebhookEvent, RazorpayError> {
         func e<T: WebhookEntity>(_ t: T.Type) -> Result<T, RazorpayError> { w.entityResult(t) }
+        func o<T: WebhookEntity>(_ t: T.Type) -> Result<T?, RazorpayError> { w.has(t) ? w.entityResult(t).map { $0 } : .success(nil) }
         switch w.name {
         case .paymentAuthorized: return e(Payment.self).map(Self.paymentAuthorized)
         case .paymentCaptured: return e(Payment.self).map(Self.paymentCaptured)
@@ -79,6 +119,23 @@ public enum WebhookEvent: Sendable, Hashable {
         case .downtimeStarted: return e(Downtime.self).map(Self.downtimeStarted)
         case .downtimeUpdated: return e(Downtime.self).map(Self.downtimeUpdated)
         case .downtimeResolved: return e(Downtime.self).map(Self.downtimeResolved)
+        case .tokenConfirmed: return e(Token.self).map(Self.tokenConfirmed)
+        case .tokenRejected: return e(Token.self).map(Self.tokenRejected)
+        case .tokenPaused: return e(Token.self).map(Self.tokenPaused)
+        case .tokenCancelled: return e(Token.self).map(Self.tokenCancelled)
+        case .paymentLinkPaid: return e(PaymentLink.self).flatMap { l in o(Payment.self).map { .paymentLinkPaid(l, $0) } }
+        case .paymentLinkPartiallyPaid: return e(PaymentLink.self).flatMap { l in o(Payment.self).map { .paymentLinkPartiallyPaid(l, $0) } }
+        case .paymentLinkExpired: return e(PaymentLink.self).map(Self.paymentLinkExpired)
+        case .paymentLinkCancelled: return e(PaymentLink.self).map(Self.paymentLinkCancelled)
+        case .qrCodeCredited: return e(QRCode.self).flatMap { q in o(Payment.self).map { .qrCodeCredited(q, $0) } }
+        case .qrCodeClosed: return e(QRCode.self).map(Self.qrCodeClosed)
+        case .transferProcessed: return e(Transfer.self).map(Self.transferProcessed)
+        case .transferFailed: return e(Transfer.self).map(Self.transferFailed)
+        case .transferReversed: return e(Transfer.self).map(Self.transferReversed)
+        case .virtualAccountCreated: return e(VirtualAccount.self).map(Self.virtualAccountCreated)
+        case .virtualAccountCredited:
+            return e(VirtualAccount.self).flatMap { va in o(Payment.self).flatMap { p in o(BankTransfer.self).map { .virtualAccountCredited(va, p, $0) } } }
+        case .virtualAccountClosed: return e(VirtualAccount.self).map(Self.virtualAccountClosed)
         default: return .success(.unknown(name: w.name.rawValue, payload: w.payload))
         }
     }

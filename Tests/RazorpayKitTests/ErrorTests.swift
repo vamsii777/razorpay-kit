@@ -3,6 +3,7 @@ import Foundation
 import NIOHTTP1
 import RazorpayKit
 @testable import RazorpayCore
+@testable import RazorpayLegacy
 @testable import RazorpayVerification
 
 final class ErrorTests: XCTestCase {
@@ -10,7 +11,7 @@ final class ErrorTests: XCTestCase {
         let mock = MockTransport(status: status, json: body)
         let client = RazorpayClient(transport: mock, key: TestKeys.key, secret: TestKeys.secret)
         do {
-            _ = try await client.payment.fetch(paymentID: "pay_TEST", queryParams: nil, extraHeaders: nil)
+            _ = try await RazorpayPaymentRoutes(client: client.handler).fetch(paymentID: "pay_TEST", queryParams: nil, extraHeaders: nil)
             return nil
         } catch let error as RazorpayError {
             return error

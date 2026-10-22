@@ -23,8 +23,8 @@
 | `client.payment.otpGenerate/otpSubmit/otpResend` | `payments.generateOTP(for:)`, `submitOTP(_:for:)`, `resendOTP(for:)` |
 | Endpoints without a typed API | `client.raw.send(.POST, "/v1/…", body: [...])` |
 
-The singular dictionary routes (`client.payment`, `client.order`, …) still work for endpoints
-the typed API doesn't cover yet.
+The singular dictionary routes (`client.payment`, `client.order`, …) still compile but are deprecated
+wherever a typed module covers the area; `client.raw` reaches any endpoint without a typed API.
 
 ## Breaking changes
 
@@ -49,3 +49,17 @@ keeps working unchanged; depend on a single product (for example `RazorpayPaymen
 
 `webhooks.verify(_:signature:)` now returns the generic ``RazorpayWebhook`` envelope so every module can
 decode its own entity. Append `.event` to get the ``WebhookEvent`` enum you used in beta.1.
+
+### New typed areas in beta.2
+
+| Dictionary route | Typed API |
+| --- | --- |
+| `client.token.all(customerID:)` / `fetch` / `delete` | `client.tokens.list(for:)` / `fetch(_:for:)` / `delete(_:for:)` |
+| `client.card.fetch(cardID:)` / `requestCardReference` | `client.cards.fetch(_:)` / `reference(.number(…))` |
+| `client.paymentLink.create(data:)` … | `client.paymentLinks.create(.init(amount: …))`, `fetch`, `list`, `update`, `cancel`, `notify` |
+| `client.qrCode.create(data:)` … | `client.qrCodes.create(.init(usage: …))`, `fetch`, `list`, `payments(of:)`, `close` |
+| `client.payment.transfer` / `client.transfer.*` | `client.transfers.create(from:_:)`, `create`, `fetch`, `list`, `hold`, `reverse`, `reversals(of:)` |
+| `client.stakeholder.*` | `client.linkedAccounts.addStakeholder(to:_:)`, `stakeholder(_:of:)`, `stakeholders(of:)`, `updateStakeholder` |
+| `client.virtualAccount.*` / `client.payment.bankTransfer` | `client.virtualAccounts.*`, `virtualAccounts.bankTransfer(for:)` |
+| `client.fundAccount.*` | `client.fundAccounts.create(for:_:)`, `list(for:)` |
+| — | `client.customers.addBankAccount(_:to:)`, `deleteBankAccount(_:of:)` |
