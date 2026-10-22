@@ -45,7 +45,7 @@ public struct RazorpayWebhookRoutes: WebhookRoutes, Sendable {
     }
 
     public func edit(webhookId: String, accountId: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
-        let url = accountId.isEmpty ? "\(APIConstants.v1)\(APIConstants.webhook)/\(accountId)" : "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)\(APIConstants.webhook)/\(webhookId)"
+        let url = accountId.isEmpty ? "\(APIConstants.v1)\(APIConstants.webhook)/\(webhookId)" : "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)\(APIConstants.webhook)/\(webhookId)"
         let requestBody = try RZPRUTL.jsonBody(data)
         let method = accountId.isEmpty ? HTTPMethod.PUT : HTTPMethod.PATCH
         let response = try await client.sendRequest(method: method, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
