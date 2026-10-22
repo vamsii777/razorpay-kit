@@ -1,7 +1,7 @@
 import Foundation
 
 /// A string-backed value set that stays open: values this SDK does not know yet decode
-/// instead of failing, and are kept in ``rawValue``.
+/// instead of failing, and are kept in `rawValue`.
 ///
 /// Conforming types declare known values as `static let`s, which you can match in a `switch`:
 ///

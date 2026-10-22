@@ -14,7 +14,7 @@ import AsyncHTTPClient
 /// ### Payment Management
 /// - ``all(queryParams:extraHeaders:)``
 /// - ``fetch(paymentID:queryParams:extraHeaders:)``
-/// - ``capture(paymentID:amount:currency:data:extraHeaders:)``
+/// - ``capture(paymentID:amount:currency:extraHeaders:)``
 /// - ``edit(paymentID:data:extraHeaders:)``
 ///
 /// ### Refunds
@@ -68,7 +68,6 @@ public protocol PaymentRoutes: RazorpayAPIRoute {
     ///   - paymentID: The unique identifier of the payment to capture
     ///   - amount: The amount to capture in smallest currency unit (e.g., paise for INR)
     ///   - currency: The currency of the payment
-    ///   - data: Additional data for the capture request
     ///   - extraHeaders: Optional additional headers for the request
     /// - Returns: A dictionary containing the capture response
     /// - Throws: An error if the capture fails
