@@ -1,4 +1,4 @@
-# ADR-0001: Swift 5.10 floor, Swift 6 language mode, and Vapor
+# ADR-0001: Swift 5.10 floor, Swift 6 language mode, and no Vapor
 
 - Status: Proposed
 - Date: 2026-10-22
@@ -22,22 +22,20 @@ latest with `-warnings-as-errors`, with complete strict concurrency.
   `@preconcurrency import` without maintainer approval and a comment explaining why.
 
 ### 2. Typed throws
-Use typed throws (`throws(RazorpayError)`) only in Swift 6-only code paths, and only where every
-error thrown maps to `RazorpayError`. Public API keeps untyped `throws` so both manifests expose
-the same API. Untyped `throws` is the default.
+Public typed APIs declare `throws(RazorpayError)` under `#if compiler(>=6.0)` and plain `throws` in
+the `#else` branch, with identical bodies. `scripts/check-typed-throws.sh` keeps the two branches in
+sync. Either way, only `RazorpayError` is thrown.
 
 ### 3. `~Copyable` and macros
 Not used. Neither is needed for an HTTP client SDK, and macros would add a swift-syntax
 dependency. Revisit only with a concrete justification in a new ADR.
 
 ### 4. Vapor
-- **`RazorpayKit` (core) does not depend on Vapor.** It depends only on AsyncHTTPClient/swift-nio
-  (and swift-crypto for signatures).
-- Vapor stays only in the optional `Razorpay` integration target for beta.1. That keeps PR #5's
-  `Application.razorpay` / `Request.razorpay` helpers.
-- Follow-up before rc.1: move the Vapor helpers into a separate package or a dedicated
-  `RazorpayVapor` target so the core package graph no longer resolves Vapor. If that does not
-  land by rc.1, remove the helpers and document the snippet in the migration guide.
+- **The package does not depend on Vapor.** `RazorpayKit` depends only on AsyncHTTPClient,
+  swift-nio and swift-crypto.
+- Updated for beta.1 (#49): the optional `Razorpay` integration target, its product and tests
+  were removed, together with the Vapor dependency. Vapor apps use `RazorpayKit` directly. The
+  DocC article `Vapor.md` and the README show the few lines of storage and webhook-route code.
 
 ## Consequences
 - The CI matrix is Swift 5.10, 6.0 and latest (see AGENTS.md).
