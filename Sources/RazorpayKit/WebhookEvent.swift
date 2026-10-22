@@ -11,6 +11,7 @@ import RazorpaySmartCollect
 import RazorpaySubscriptions
 import RazorpayInvoices
 import RazorpaySettlements
+import RazorpayPartners
 
 /// Every webhook this SDK models, as one exhaustive enum. Available with `import RazorpayKit`.
 ///
@@ -62,7 +63,13 @@ public enum WebhookEvent: Sendable, Hashable {
     case invoicePaid(Invoice, Payment?)
     case invoicePartiallyPaid(Invoice, Payment?)
     case invoiceExpired(Invoice)
+    case virtualAccountClosed(VirtualAccount)
     case settlementProcessed(Settlement)
+    case accountActivated(Account)
+    case accountUnderReview(Account)
+    case accountNeedsClarification(Account)
+    case accountSuspended(Account)
+    case accountRejected(Account)
     /// An event this SDK does not model yet, with its raw `payload`.
     case unknown(name: String, payload: JSONValue)
 
@@ -107,7 +114,13 @@ public enum WebhookEvent: Sendable, Hashable {
         case .invoicePaid: return RazorpayWebhook.Name.invoicePaid.rawValue
         case .invoicePartiallyPaid: return RazorpayWebhook.Name.invoicePartiallyPaid.rawValue
         case .invoiceExpired: return RazorpayWebhook.Name.invoiceExpired.rawValue
+        case .virtualAccountClosed: return RazorpayWebhook.Name.virtualAccountClosed.rawValue
         case .settlementProcessed: return RazorpayWebhook.Name.settlementProcessed.rawValue
+        case .accountActivated: return RazorpayWebhook.Name.accountActivated.rawValue
+        case .accountUnderReview: return RazorpayWebhook.Name.accountUnderReview.rawValue
+        case .accountNeedsClarification: return RazorpayWebhook.Name.accountNeedsClarification.rawValue
+        case .accountSuspended: return RazorpayWebhook.Name.accountSuspended.rawValue
+        case .accountRejected: return RazorpayWebhook.Name.accountRejected.rawValue
         case .unknown(let name, _): return name
         }
     }
@@ -177,7 +190,13 @@ public enum WebhookEvent: Sendable, Hashable {
         case .invoicePaid: return e(Invoice.self).flatMap { i in o(Payment.self).map { .invoicePaid(i, $0) } }
         case .invoicePartiallyPaid: return e(Invoice.self).flatMap { i in o(Payment.self).map { .invoicePartiallyPaid(i, $0) } }
         case .invoiceExpired: return e(Invoice.self).map(Self.invoiceExpired)
+        case .virtualAccountClosed: return e(VirtualAccount.self).map(Self.virtualAccountClosed)
         case .settlementProcessed: return e(Settlement.self).map(Self.settlementProcessed)
+        case .accountActivated: return e(Account.self).map(Self.accountActivated)
+        case .accountUnderReview: return e(Account.self).map(Self.accountUnderReview)
+        case .accountNeedsClarification: return e(Account.self).map(Self.accountNeedsClarification)
+        case .accountSuspended: return e(Account.self).map(Self.accountSuspended)
+        case .accountRejected: return e(Account.self).map(Self.accountRejected)
         default: return .success(.unknown(name: w.name.rawValue, payload: w.payload))
         }
     }

@@ -42,6 +42,7 @@ let order = try await razorpay.orders.create(.init(amount: .inr(rupees: 499)))
 | `RazorpayAddons` | `addons` | Items |
 | `RazorpayProducts` | `accountProducts` | Core |
 | `RazorpaySettlements` | `settlements`, `iins` | Core |
+| `RazorpayPartners` | `accounts`, `webhookEndpoints` | Core |
 | `RazorpayLegacy` | deprecated `client.payment`, `client.order`, … | Core |
 
 Picking fewer modules compiles less code and skips swift-crypto unless you verify signatures.

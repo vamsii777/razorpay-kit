@@ -49,6 +49,7 @@ struct WebhookWiringTests {
         #expect(pay?.id == "pay_TEST000001" && bt?.mode == "NEFT")
         #expect(try event("virtual_account.created", wrap(("virtual_account", vaJSON))).name == "virtual_account.created")
         #expect(try event("virtual_account.closed", wrap(("virtual_account", vaJSON))).name == "virtual_account.closed")
+        guard case .virtualAccountClosed = try event("virtual_account.closed", wrap(("virtual_account", vaJSON))) else { Issue.record("closed should be typed"); return }
     }
 
     @Test func missingOrBrokenEntitiesThrow() {
@@ -117,5 +118,15 @@ struct SettlementWebhookWiringTests {
         #expect(e.name == "settlement.processed")
         let empty = #"{"entity":"event","event":"settlement.processed","payload":{},"created_at":1700000000}"#
         #expect(throws: RazorpayError.self) { try RazorpayWebhook.decode(Array(empty.utf8)).get().event }
+    }
+}
+
+@Suite("Partner account webhook wiring")
+struct AccountWebhookWiringTests {
+    @Test(arguments: ["account.activated", "account.under_review", "account.needs_clarification", "account.suspended", "account.rejected"])
+    func accounts(name: String) throws {
+        let body = #"{"entity":"event","event":"\#(name)","payload":{"account":{"entity":\#(PartnerFixtures.account)}},"created_at":1700000000}"#
+        #expect(try RazorpayWebhook.decode(Array(body.utf8)).get().event.name == name)
+        if case .unknown = try RazorpayWebhook.decode(Array(body.utf8)).get().event { Issue.record("\(name) should be typed") }
     }
 }

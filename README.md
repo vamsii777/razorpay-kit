@@ -22,7 +22,7 @@ dependencies: [
 Depend on `RazorpayKit` for everything, or on single areas such as `RazorpayPayments`, `RazorpayOrders`,
 `RazorpayRefunds`, `RazorpayCustomers`, `RazorpayTokens`, `RazorpayCards`, `RazorpayPaymentLinks`, `RazorpayQRCodes`,
 `RazorpayRoute`, `RazorpaySmartCollect`, `RazorpayItems`, `RazorpayInvoices`, `RazorpaySubscriptions`, `RazorpayAddons`,
-`RazorpayProducts`, `RazorpaySettlements` and `RazorpayVerification` (signatures and webhooks). Each adds its namespace to
+`RazorpayProducts`, `RazorpaySettlements`, `RazorpayPartners` and `RazorpayVerification` (signatures and webhooks). Each adds its namespace to
 the same `RazorpayClient`. See the "Choosing modules" DocC article.
 
 ## Quick start (1.0)

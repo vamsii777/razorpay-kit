@@ -255,3 +255,7 @@ public struct SettlementReconEntry: Sendable, Hashable, Decodable {
         postedAt = try c.decodeIfPresent(Date.self, forKey: .postedAt)
     }
 }
+
+extension RazorpayWebhook.Name {
+    public static let settlementProcessed: Self = "settlement.processed"
+}

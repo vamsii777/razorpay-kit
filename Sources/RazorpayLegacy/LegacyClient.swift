@@ -3,6 +3,7 @@ import RazorpayCore
 /// The untyped `[String: Any]` routes from 0.x. Prefer the typed modules, for example
 /// `razorpay.payments` from RazorpayPayments.
 extension RazorpayClient {
+    @available(*, deprecated, renamed: "accounts", message: "Use the typed `accounts` API; `raw` covers anything it doesn't.")
     public var account: RazorpayAccountRoutes { RazorpayAccountRoutes(client: handler) }
     @available(*, deprecated, renamed: "addons", message: "Use the typed `addons` API; `raw` covers anything it doesn't.")
     public var addon: RazorpayAddonRoutes { RazorpayAddonRoutes(client: handler) }
@@ -42,5 +43,6 @@ extension RazorpayClient {
     public var transfer: RazorpayTransferRoutes { RazorpayTransferRoutes(client: handler) }
     @available(*, deprecated, renamed: "virtualAccounts", message: "Use the typed `virtualAccounts` API; `raw` covers anything it doesn't.")
     public var virtualAccount: RazorpayVirtualAccountRoutes { RazorpayVirtualAccountRoutes(client: handler) }
+    @available(*, deprecated, renamed: "webhookEndpoints", message: "Use the typed `webhookEndpoints` API; `raw` covers anything it doesn't.")
     public var webhook: RazorpayWebhookRoutes { RazorpayWebhookRoutes(client: handler) }
 }

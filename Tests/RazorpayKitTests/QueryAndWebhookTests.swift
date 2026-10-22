@@ -43,7 +43,7 @@ final class QueryAndWebhookTests: XCTestCase {
 
     func testWebhookEditV1UsesWebhookId() async throws {
         let mock = MockTransport(json: #"{"id":"wh_TEST"}"#)
-        _ = try await makeClient(mock).webhook.edit(webhookId: "wh_TEST", accountId: "", data: ["url": "https://example.com/hook"], extraHeaders: nil)
+        _ = try await RazorpayWebhookRoutes(client: makeClient(mock).handler).edit(webhookId: "wh_TEST", accountId: "", data: ["url": "https://example.com/hook"], extraHeaders: nil)
         let requestValue = await mock.lastRequest
         let request = try XCTUnwrap(requestValue)
         XCTAssertEqual(request.method, .PUT)
@@ -54,7 +54,7 @@ final class QueryAndWebhookTests: XCTestCase {
 
     func testWebhookEditV2UsesAccountAndWebhookId() async throws {
         let mock = MockTransport(json: #"{"id":"wh_TEST"}"#)
-        _ = try await makeClient(mock).webhook.edit(webhookId: "wh_TEST", accountId: "acc_TEST", data: ["active": true], extraHeaders: nil)
+        _ = try await RazorpayWebhookRoutes(client: makeClient(mock).handler).edit(webhookId: "wh_TEST", accountId: "acc_TEST", data: ["active": true], extraHeaders: nil)
         let requestValue = await mock.lastRequest
         let request = try XCTUnwrap(requestValue)
         XCTAssertEqual(request.method, .PATCH)
