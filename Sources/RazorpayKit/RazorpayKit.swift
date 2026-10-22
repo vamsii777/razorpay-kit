@@ -17,4 +17,5 @@
 @_exported import RazorpayPaymentLinks
 @_exported import RazorpayQRCodes
 @_exported import RazorpayRoute
+@_exported import RazorpaySmartCollect
 @_exported import RazorpayLegacy
