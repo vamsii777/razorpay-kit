@@ -256,7 +256,7 @@ public protocol PaymentRoutes: RazorpayAPIRoute {
 /// let paymentData = ["amount": 1000, "currency": "INR"]
 /// let newPayment = try await paymentRoutes.createPaymentJson(data: paymentData)
 /// ```
-public struct RazorpayPaymentRoutes: PaymentRoutes {
+public struct RazorpayPaymentRoutes: PaymentRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 
@@ -287,7 +287,7 @@ public struct RazorpayPaymentRoutes: PaymentRoutes {
         captureData["amount"] = amount
         captureData["currency"] = currency.rawValue
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/\(paymentID)/capture"
-        let requestBody = try HTTPClientRequest.Body.json(captureData)
+        let requestBody = try RZPRUTL.jsonBody(captureData)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -296,14 +296,14 @@ public struct RazorpayPaymentRoutes: PaymentRoutes {
         var refundData = data
         refundData["amount"] = amount
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/\(paymentID)/refund"
-        let requestBody = try HTTPClientRequest.Body.json(refundData)
+        let requestBody = try RZPRUTL.jsonBody(refundData)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
     public func transfer(paymentID: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/\(paymentID)/transfers"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -322,21 +322,21 @@ public struct RazorpayPaymentRoutes: PaymentRoutes {
 
     public func createPaymentJson(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/create/json"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
     public func createRecurringPayment(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/create/recurring"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
     public func edit(paymentID: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/\(paymentID)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .PATCH, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -373,14 +373,14 @@ public struct RazorpayPaymentRoutes: PaymentRoutes {
 
     public func createUpi(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/create/upi"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
     public func validateVpa(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/validate/vpa"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -399,7 +399,7 @@ public struct RazorpayPaymentRoutes: PaymentRoutes {
 
     public func otpSubmit(paymentId: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/\(paymentId)/otp/submit"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }

@@ -120,7 +120,19 @@ public actor RazorpayClient {
     ///   - key: Your Razorpay API key
     ///   - secret: Your Razorpay API secret
     public init(_ httpClient: HTTPClient = HTTPClient.shared, key: String, secret: String) {
-        self.handler = RazorpayAPIHandler(httpClient: httpClient, key: key, secret: secret)
+        self.init(transport: AsyncHTTPClientTransport(httpClient: httpClient), key: key, secret: secret)
+    }
+
+    /// Creates a client that sends every request through a custom transport.
+    ///
+    /// The base URL is always `https://api.razorpay.com`. A transport can change how requests are
+    /// sent, for example a mock in tests, but it cannot change the host.
+    /// - Parameters:
+    ///   - transport: The transport that sends requests.
+    ///   - key: Your Razorpay API key ID.
+    ///   - secret: Your Razorpay API key secret.
+    public init(transport: any RazorpayTransport, key: String, secret: String) {
+        self.handler = RazorpayAPIHandler(transport: transport, key: key, secret: secret)
         account = RazorpayAccountRoutes(client: handler)
         addon = RazorpayAddonRoutes(client: handler)
         card = RazorpayCardRoutes(client: handler)

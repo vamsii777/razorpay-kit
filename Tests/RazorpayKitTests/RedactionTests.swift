@@ -28,7 +28,7 @@ struct RedactionTests {
     }
 
     @Test func handlerIsRedacted() {
-        let handler = RazorpayAPIHandler(httpClient: HTTPClient.shared, key: Self.key, secret: Self.secret)
+        let handler = RazorpayAPIHandler(transport: AsyncHTTPClientTransport(httpClient: HTTPClient.shared), key: Self.key, secret: Self.secret)
         assertRedacted(String(describing: handler))
         assertRedacted(String(reflecting: handler))
         var dumped = ""

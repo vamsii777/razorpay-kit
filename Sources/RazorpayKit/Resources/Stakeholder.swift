@@ -26,7 +26,7 @@ public protocol StakeholderRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `StakeholderRoutes` protocol for Razorpay stakeholder operations.
-public struct RazorpayStakeholderRoutes: StakeholderRoutes {
+public struct RazorpayStakeholderRoutes: StakeholderRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 
@@ -36,7 +36,7 @@ public struct RazorpayStakeholderRoutes: StakeholderRoutes {
     
     public func create(accountId: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)\(APIConstants.stakeholderURL)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -55,7 +55,7 @@ public struct RazorpayStakeholderRoutes: StakeholderRoutes {
 
     public func edit(accountId: String, stakeholderId: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)\(APIConstants.stakeholderURL)/\(stakeholderId)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .PATCH, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }

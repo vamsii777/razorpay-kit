@@ -15,7 +15,7 @@ import Foundation
 /// - ``isInvalidCredentials``
 /// - ``isInvalidAmount``
 /// - ``isMissingRequiredField``
-public enum RazorpayError: LocalizedError {
+public enum RazorpayError: LocalizedError, Sendable {
     /// Invalid response format or missing required fields
     case invalidResponse(String)
     
