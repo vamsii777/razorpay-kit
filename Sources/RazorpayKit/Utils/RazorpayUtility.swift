@@ -27,25 +27,30 @@ struct RZPRUTL {
         return httpHeaders
     }
     
-    /// Processes an HTTP response and converts the body to a dictionary.
-    /// 
-    /// - Parameter response: The HTTPClientResponse to process.
-    /// - Returns: A dictionary containing the parsed JSON response.
-    /// - Throws: `RZPError.badRequestError` if the response cannot be parsed as JSON.
+    /// Turns an HTTP response into a JSON dictionary.
     ///
-    /// ```swift
-    /// let response = // ... HTTP response ...
-    /// let json = try await RZPRUTL.processResponse(response)
-    /// ```
+    /// - Throws: ``RazorpayError/apiError(_:)`` with the HTTP status for any non-2xx response, or
+    ///   for a 2xx body that contains an `error` object. Throws ``RazorpayError/invalidResponse(_:)``
+    ///   if a 2xx body is not a JSON object.
     static func processResponse(_ response: RazorpayHTTPResponse) async throws -> [String: Any] {
-        let data = response.body
+        let status = Int(response.status.code)
+        let json = try? JSONSerialization.jsonObject(with: response.body, options: []) as? [String: Any]
 
-        guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-            throw RZPError.badRequestError(message: "INVALID_RESPONSE", internalErrorCode: nil, field: nil, description: nil, code: nil)
+        guard (200..<300).contains(status) else {
+            if let json, let apiError = RazorpayError.APIError(errorObject: json, statusCode: status) {
+                throw RazorpayError.apiError(apiError)
+            }
+            throw RazorpayError.apiError(.init(statusCode: status, description: "HTTP \(status) with an unparseable error body"))
+        }
+        guard let json else {
+            throw RazorpayError.invalidResponse("Response body is not a JSON object (HTTP \(status))")
+        }
+        if let apiError = RazorpayError.APIError(errorObject: json, statusCode: status) {
+            throw RazorpayError.apiError(apiError)
         }
         return json
     }
-    
+
     /// Serializes a JSON object into a request body.
     static func jsonBody(_ json: [String: Any]) throws -> Data {
         try JSONSerialization.data(withJSONObject: json, options: [])
