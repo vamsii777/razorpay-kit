@@ -118,6 +118,8 @@ public enum RazorpayError: Error, Sendable {
             func string(_ key: String) -> String? {
                 (error[key] as? String).flatMap { $0.isEmpty || $0 == "NA" ? nil : $0 }
             }
+            // Some entities (transfers) embed an `error` object whose fields are all null on success.
+            guard string("code") != nil || string("description") != nil || (statusCode ?? 200) >= 400 else { return nil }
             self.init(
                 statusCode: statusCode,
                 code: string("code").map(ErrorCode.init(rawValue:)),
