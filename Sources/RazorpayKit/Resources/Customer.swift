@@ -36,14 +36,14 @@ public struct RazorpayCustomerRoutes: CustomerRoutes, Sendable {
 
     public func create(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.customerURL)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
     public func edit(customerID: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.customerURL)/\(customerID)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .PUT, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
