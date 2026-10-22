@@ -34,6 +34,9 @@ error you ever see is ``RazorpayError``. On Swift 6 compilers that's enforced wi
 - ``Money``
 - ``Currency``
 
+### Settlements
+- <doc:Settlements>
+
 ### Billing
 - <doc:Billing>
 

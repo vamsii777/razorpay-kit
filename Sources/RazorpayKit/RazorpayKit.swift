@@ -7,6 +7,7 @@
 @_exported import RazorpayOrders
 @_exported import RazorpayRefunds
 @_exported import RazorpayCustomers
+@_exported import RazorpaySettlements
 @_exported import RazorpayItems
 @_exported import RazorpayInvoices
 @_exported import RazorpaySubscriptions
