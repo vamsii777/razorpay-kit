@@ -17,7 +17,28 @@ dependencies: [
 ```
 
 
-## Using the API
+## Quick start (1.0)
+
+```swift
+import RazorpayKit
+
+let razorpay = RazorpayClient(key: keyID, secret: keySecret, webhookSecret: webhookSecret)
+
+let order = try await razorpay.orders.create(.init(amount: .inr(rupees: 499), receipt: "rcpt_42"))
+try razorpay.verify(checkoutResponse)                       // Checkout signature
+let payment = try await razorpay.payments.capture(checkoutResponse.paymentID, amount: order.amount)
+
+for try await refund in razorpay.payments.refunds(of: payment.id) { print(refund.status) }
+
+let event = try razorpay.webhooks.verify(rawBody, signature: signatureHeader)
+if case .paymentCaptured(let captured) = event { fulfil(captured) }
+```
+
+Every call is async, models are `Sendable` and `Codable`, and the only error type is `RazorpayError`,
+which Swift 6 compilers enforce with `throws(RazorpayError)`. It builds on Swift 5.10 or later. See the DocC
+catalog in `Sources/RazorpayKit/RazorpayKit.docc`, including the migration guide.
+
+## Using the API (dictionary routes)
 
 Initialize the `RazorpayClient` with your Razorpay API key, secret, and environment. This client will be your gateway to interacting with the Razorpay API.
 
