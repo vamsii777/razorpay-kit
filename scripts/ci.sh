@@ -18,7 +18,7 @@ if swift --version 2>&1 | grep -q 'Swift version 5\.10'; then
 fi
 if [[ "${RUN_TESTS:-1}" == "1" ]]; then
   swift build --build-tests -Xswiftc -warnings-as-errors
-  swift test --skip-build --parallel ${SWIFT_TEST_ARGS:-}
+  swift test --skip-build ${SWIFT_TEST_ARGS:-}
 else
   # Build-only (e.g. Swift 5.10, which has no swift-testing): skip test targets.
   swift build -Xswiftc -warnings-as-errors
