@@ -29,6 +29,7 @@ package enum RazorpayCoding {
            let apiError = RazorpayError.APIError(errorObject: json, statusCode: status) {
             return .failure(.api(apiError))
         }
+        if response.body.isEmpty, let empty = EmptyResponse() as? T { return .success(empty) }
         if response.body.isEmpty {
             return .failure(.decoding(.init(statusCode: status, type: String(describing: T.self), message: "empty body")))
         }
@@ -88,4 +89,10 @@ extension RazorpayAPIHandler {
         try await result(method, path, query: query, body: body, options: options, as: type).get()
     }
     #endif
+}
+
+/// A response whose body is ignored: endpoints that answer `204`, `{}` or `[]`.
+package struct EmptyResponse: Decodable, Sendable {
+    package init() {}
+    package init(from decoder: any Decoder) throws {}
 }

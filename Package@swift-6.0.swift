@@ -22,6 +22,7 @@ let features: [(String, [String])] = [
     ("RazorpayPaymentLinks", []),
     ("RazorpayQRCodes", ["RazorpayPayments"]),
     ("RazorpayRoute", []),
+    ("RazorpaySmartCollect", ["RazorpayPayments"]),
     ("RazorpayLegacy", []),
 ]
 
