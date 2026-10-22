@@ -107,3 +107,15 @@ struct CoreModelCodableTests {
         try roundTrip(Customer.self, Fixtures.customer)
     }
 }
+
+@Suite("Settlement webhook wiring")
+struct SettlementWebhookWiringTests {
+    @Test func settlementProcessed() throws {
+        let body = #"{"entity":"event","event":"settlement.processed","contains":["settlement"],"payload":{"settlement":{"entity":\#(SettlementFixtures.settlement)}},"created_at":1700000000}"#
+        let e = try RazorpayWebhook.decode(Array(body.utf8)).get().event
+        guard case .settlementProcessed = e else { Issue.record("got \(e)"); return }
+        #expect(e.name == "settlement.processed")
+        let empty = #"{"entity":"event","event":"settlement.processed","payload":{},"created_at":1700000000}"#
+        #expect(throws: RazorpayError.self) { try RazorpayWebhook.decode(Array(empty.utf8)).get().event }
+    }
+}

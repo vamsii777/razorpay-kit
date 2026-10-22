@@ -63,7 +63,7 @@ public struct Invoice: Sendable, Hashable, Identifiable, Decodable {
         public static let sent: Self = "sent"
     }
 
-    /// Where to send a reminder with ``RazorpayClient/Invoices/notify(_:by:options:)``.
+    /// Where to send a reminder with `invoices.notify(_:by:options:)`.
     public struct Medium: RazorpayStringEnum {
         public let rawValue: String
         public init(rawValue: String) { self.rawValue = rawValue }
@@ -189,7 +189,7 @@ public struct Invoice: Sendable, Hashable, Identifiable, Decodable {
         }
     }
 
-    /// The body for ``RazorpayClient/Invoices/create(_:options:)``. Pass either `customerID` or `customer`.
+    /// The body for `invoices.create(_:options:)`. Pass either `customerID` or `customer`.
     public struct Create: Sendable, Hashable, Encodable {
         public var type: Kind
         public var description: String?
@@ -202,7 +202,7 @@ public struct Invoice: Sendable, Hashable, Identifiable, Decodable {
         public var smsNotify: Bool?
         public var emailNotify: Bool?
         public var partialPayment: Bool?
-        /// `true` creates a draft you issue later with ``RazorpayClient/Invoices/issue(_:options:)``.
+        /// `true` creates a draft you issue later with `invoices.issue(_:options:)`.
         public var draft: Bool
         public var notes: Notes
 

@@ -57,7 +57,7 @@ public struct AccountProduct: Sendable, Hashable, Identifiable, Decodable {
         enum CodingKeys: String, CodingKey { case id, accepted, acceptedAt = "accepted_at" }
     }
 
-    /// The body for ``RazorpayClient/AccountProducts/request(_:for:options:)``.
+    /// The body for `accountProducts.request(_:for:options:)`.
     public struct Request: Sendable, Hashable, Encodable {
         public var productName: ProductName
         public var tncAccepted: Bool?

@@ -10,6 +10,7 @@ import RazorpayRoute
 import RazorpaySmartCollect
 import RazorpaySubscriptions
 import RazorpayInvoices
+import RazorpaySettlements
 
 /// Every webhook this SDK models, as one exhaustive enum. Available with `import RazorpayKit`.
 ///
@@ -61,6 +62,7 @@ public enum WebhookEvent: Sendable, Hashable {
     case invoicePaid(Invoice, Payment?)
     case invoicePartiallyPaid(Invoice, Payment?)
     case invoiceExpired(Invoice)
+    case settlementProcessed(Settlement)
     /// An event this SDK does not model yet, with its raw `payload`.
     case unknown(name: String, payload: JSONValue)
 
@@ -105,6 +107,7 @@ public enum WebhookEvent: Sendable, Hashable {
         case .invoicePaid: return RazorpayWebhook.Name.invoicePaid.rawValue
         case .invoicePartiallyPaid: return RazorpayWebhook.Name.invoicePartiallyPaid.rawValue
         case .invoiceExpired: return RazorpayWebhook.Name.invoiceExpired.rawValue
+        case .settlementProcessed: return RazorpayWebhook.Name.settlementProcessed.rawValue
         case .unknown(let name, _): return name
         }
     }
@@ -174,6 +177,7 @@ public enum WebhookEvent: Sendable, Hashable {
         case .invoicePaid: return e(Invoice.self).flatMap { i in o(Payment.self).map { .invoicePaid(i, $0) } }
         case .invoicePartiallyPaid: return e(Invoice.self).flatMap { i in o(Payment.self).map { .invoicePartiallyPaid(i, $0) } }
         case .invoiceExpired: return e(Invoice.self).map(Self.invoiceExpired)
+        case .settlementProcessed: return e(Settlement.self).map(Self.settlementProcessed)
         default: return .success(.unknown(name: w.name.rawValue, payload: w.payload))
         }
     }

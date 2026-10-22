@@ -72,7 +72,7 @@ public struct Subscription: Sendable, Hashable, Identifiable, Decodable {
         }
     }
 
-    /// The body for ``RazorpayClient/Subscriptions/create(_:options:)``.
+    /// The body for `subscriptions.create(_:options:)`.
     public struct Create: Sendable, Hashable, Encodable {
         public var planID: PlanID
         /// Number of billing cycles.
@@ -121,7 +121,7 @@ public struct Subscription: Sendable, Hashable, Identifiable, Decodable {
         }
     }
 
-    /// Changes for ``RazorpayClient/Subscriptions/update(_:_:options:)``. Only non-nil fields are sent.
+    /// Changes for `subscriptions.update(_:_:options:)`. Only non-nil fields are sent.
     public struct Update: Sendable, Hashable, Encodable {
         public var planID: PlanID?
         public var offerID: OfferID?
