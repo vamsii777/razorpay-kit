@@ -35,7 +35,7 @@ public struct RazorpayClient: Sendable {
     ///   - transport: The transport that sends requests.
     ///   - key: Your Razorpay API key ID.
     ///   - secret: Your Razorpay API key secret.
-    ///   - webhookSecret: The webhook secret from the Dashboard, used by ``webhooks``.
+    ///   - webhookSecret: The webhook secret from the Dashboard, used by `webhooks` (RazorpayVerification).
     public init(transport: any RazorpayTransport, key: String, secret: String, webhookSecret: String? = nil) {
         self.handler = RazorpayAPIHandler(transport: transport, key: key, secret: secret)
         self.signing = SigningSecrets(keySecret: secret, webhookSecret: webhookSecret)

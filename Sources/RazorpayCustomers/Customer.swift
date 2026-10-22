@@ -13,7 +13,7 @@ public struct Customer: Sendable, Hashable, Identifiable, Codable {
     public let notes: Notes
     public let createdAt: Date
 
-    /// The body for ``RazorpayClient/Customers/create(_:options:)`` and `update`.
+    /// The body for `customers.create(_:options:)` and `update`.
     public struct Create: Sendable, Hashable, Encodable {
         public var name: String?
         public var email: String?
