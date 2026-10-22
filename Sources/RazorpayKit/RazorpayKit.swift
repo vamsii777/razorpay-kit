@@ -8,4 +8,15 @@
 @_exported import RazorpayRefunds
 @_exported import RazorpayCustomers
 @_exported import RazorpaySettlements
+@_exported import RazorpayItems
+@_exported import RazorpayInvoices
+@_exported import RazorpaySubscriptions
+@_exported import RazorpayAddons
+@_exported import RazorpayProducts
+@_exported import RazorpayTokens
+@_exported import RazorpayCards
+@_exported import RazorpayPaymentLinks
+@_exported import RazorpayQRCodes
+@_exported import RazorpayRoute
+@_exported import RazorpaySmartCollect
 @_exported import RazorpayLegacy

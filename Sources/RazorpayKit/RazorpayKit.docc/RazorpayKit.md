@@ -36,6 +36,9 @@ error you ever see is ``RazorpayError``. On Swift 6 compilers that's enforced wi
 ### Settlements
 - <doc:Settlements>
 
+### Billing
+- <doc:Billing>
+
 ### Verification
 - <doc:Webhooks>
 - <doc:Downtimes>
