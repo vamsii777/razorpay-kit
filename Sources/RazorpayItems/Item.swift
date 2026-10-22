@@ -34,7 +34,7 @@ public struct Item: Sendable, Hashable, Identifiable, Decodable {
         public static let addon: Self = "addon"
     }
 
-    /// The body for ``RazorpayClient/Items/create(_:options:)``.
+    /// The body for `items.create(_:options:)`.
     public struct Create: Sendable, Hashable, Encodable {
         public var name: String
         public var amount: Money

@@ -195,7 +195,6 @@ extension RazorpayWebhook.Name {
     public static let transferProcessed: Self = "transfer.processed"
     public static let transferFailed: Self = "transfer.failed"
     public static let transferReversed: Self = "transfer.reversed"
-    public static let settlementProcessed: Self = "settlement.processed"
 }
 
 struct TransfersBody: Encodable, Sendable { let transfers: [Transfer.Create] }

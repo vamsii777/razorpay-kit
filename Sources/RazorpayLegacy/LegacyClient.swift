@@ -3,6 +3,7 @@ import RazorpayCore
 /// The untyped `[String: Any]` routes from 0.x. Prefer the typed modules, for example
 /// `razorpay.payments` from RazorpayPayments.
 extension RazorpayClient {
+    @available(*, deprecated, renamed: "accounts", message: "Use the typed `accounts` API; `raw` covers anything it doesn't.")
     public var account: RazorpayAccountRoutes { RazorpayAccountRoutes(client: handler) }
     @available(*, deprecated, renamed: "addons", message: "Use the typed `addons` API; `raw` covers anything it doesn't.")
     public var addon: RazorpayAddonRoutes { RazorpayAddonRoutes(client: handler) }
@@ -12,6 +13,7 @@ extension RazorpayClient {
     public var customer: RazorpayCustomerRoutes { RazorpayCustomerRoutes(client: handler) }
     @available(*, deprecated, renamed: "fundAccounts", message: "Use the typed `fundAccounts` API; `raw` covers anything it doesn't.")
     public var fundAccount: RazorpayFundAccountRoutes { RazorpayFundAccountRoutes(client: handler) }
+    @available(*, deprecated, renamed: "iins", message: "Use the typed `iins` API; `raw` covers anything it doesn't.")
     public var iin: RazorpayIINRoutes { RazorpayIINRoutes(client: handler) }
     @available(*, deprecated, renamed: "invoices", message: "Use the typed `invoices` API; `raw` covers anything it doesn't.")
     public var invoice: RazorpayInvoiceRoutes { RazorpayInvoiceRoutes(client: handler) }
@@ -29,6 +31,7 @@ extension RazorpayClient {
     public var qrCode: RazorpayQRCodeRoutes { RazorpayQRCodeRoutes(client: handler) }
     @available(*, deprecated, renamed: "refunds", message: "Use the typed `refunds` API; `raw` covers anything it doesn't.")
     public var refund: RazorpayRefundRoutes { RazorpayRefundRoutes(client: handler) }
+    @available(*, deprecated, renamed: "settlements", message: "Use the typed `settlements` API; `raw` covers anything it doesn't.")
     public var settlement: RazorpaySettlementRoutes { RazorpaySettlementRoutes(client: handler) }
     @available(*, deprecated, renamed: "linkedAccounts", message: "Use the typed `linkedAccounts` API; `raw` covers anything it doesn't.")
     public var stakeholder: RazorpayStakeholderRoutes { RazorpayStakeholderRoutes(client: handler) }
@@ -40,5 +43,6 @@ extension RazorpayClient {
     public var transfer: RazorpayTransferRoutes { RazorpayTransferRoutes(client: handler) }
     @available(*, deprecated, renamed: "virtualAccounts", message: "Use the typed `virtualAccounts` API; `raw` covers anything it doesn't.")
     public var virtualAccount: RazorpayVirtualAccountRoutes { RazorpayVirtualAccountRoutes(client: handler) }
+    @available(*, deprecated, renamed: "webhookEndpoints", message: "Use the typed `webhookEndpoints` API; `raw` covers anything it doesn't.")
     public var webhook: RazorpayWebhookRoutes { RazorpayWebhookRoutes(client: handler) }
 }

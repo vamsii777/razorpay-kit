@@ -25,7 +25,7 @@ public struct Plan: Sendable, Hashable, Identifiable, Decodable {
         public static let yearly: Self = "yearly"
     }
 
-    /// The body for ``RazorpayClient/Plans/create(_:options:)``.
+    /// The body for `plans.create(_:options:)`.
     public struct Create: Sendable, Hashable, Encodable {
         public var period: Period
         /// Charge every `interval` periods. Daily plans need an interval of at least 7.

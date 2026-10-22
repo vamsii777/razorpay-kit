@@ -15,7 +15,7 @@ public struct Addon: Sendable, Hashable, Identifiable, Decodable {
     public let invoiceID: InvoiceID?
     public let createdAt: Date
 
-    /// The body for ``RazorpayClient/Addons/create(for:_:options:)``.
+    /// The body for `addons.create(for:_:options:)`.
     public struct Create: Sendable, Hashable, Encodable {
         public var item: Item.Create
         public var quantity: Int
