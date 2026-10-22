@@ -26,7 +26,7 @@ public struct IIN: Sendable, Hashable, Decodable {
         public static let prepaid: Self = "prepaid"
     }
 
-    /// The flow to list IINs for with ``RazorpayClient/IINs/list(flow:options:)``.
+    /// The flow to list IINs for with `iins.list(flow:options:)`.
     public struct Flow: RazorpayStringEnum {
         public let rawValue: String
         public init(rawValue: String) { self.rawValue = rawValue }
@@ -34,7 +34,7 @@ public struct IIN: Sendable, Hashable, Decodable {
         public static let rupay: Self = "rupay"
     }
 
-    /// A sub-type to list IINs for with ``RazorpayClient/IINs/list(subType:options:)``.
+    /// A sub-type to list IINs for with `iins.list(subType:options:)`.
     public struct SubType: RazorpayStringEnum {
         public let rawValue: String
         public init(rawValue: String) { self.rawValue = rawValue }

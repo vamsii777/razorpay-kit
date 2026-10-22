@@ -102,7 +102,7 @@ public struct InstantSettlement: Sendable, Hashable, Identifiable, Decodable {
         }
     }
 
-    /// The body for ``RazorpayClient/Settlements/createInstant(_:options:)``.
+    /// The body for `settlements.createInstant(_:options:)`.
     public struct Create: Sendable, Hashable, Encodable {
         /// How much to settle. Ignored when `settleFullBalance` is `true`.
         public var amount: Money?
