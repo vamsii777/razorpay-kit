@@ -2,7 +2,7 @@ import Foundation
 import RazorpayCore
 
 /// A refund of a captured payment. See https://razorpay.com/docs/api/refunds/.
-public struct Refund: Sendable, Hashable, Identifiable, Decodable {
+public struct Refund: Sendable, Hashable, Identifiable, Codable {
     public typealias ID = RefundID
 
     public let id: ID
@@ -92,4 +92,23 @@ extension RazorpayWebhook.Name {
     public static let refundCreated: Self = "refund.created"
     public static let refundProcessed: Self = "refund.processed"
     public static let refundFailed: Self = "refund.failed"
+}
+
+extension Refund {
+    /// Encodes Razorpay's wire shape, so a decoded refund round-trips.
+    public func encode(to encoder: any Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encodeMoney(amount, .amount)
+        try c.encode(amount.currency, forKey: .currency)
+        try c.encode(paymentID, forKey: .paymentID)
+        try c.encode(status, forKey: .status)
+        try c.encodeIfPresent(receipt, forKey: .receipt)
+        try c.encodeIfPresent(batchID, forKey: .batchID)
+        try c.encodeIfPresent(speedRequested, forKey: .speedRequested)
+        try c.encodeIfPresent(speedProcessed, forKey: .speedProcessed)
+        try c.encode(notes, forKey: .notes)
+        try c.encode(acquirerData, forKey: .acquirerData)
+        try c.encode(createdAt, forKey: .createdAt)
+    }
 }

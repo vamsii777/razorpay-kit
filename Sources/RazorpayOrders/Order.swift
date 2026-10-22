@@ -2,7 +2,7 @@ import Foundation
 import RazorpayCore
 
 /// A Razorpay order. Create one before opening Checkout. See https://razorpay.com/docs/api/orders/.
-public struct Order: Sendable, Hashable, Identifiable, Decodable {
+public struct Order: Sendable, Hashable, Identifiable, Codable {
     public typealias ID = OrderID
 
     public let id: ID
@@ -85,4 +85,22 @@ extension Order: WebhookEntity { public static var payloadKey: String { "order" 
 
 extension RazorpayWebhook.Name {
     public static let orderPaid: Self = "order.paid"
+}
+
+extension Order {
+    /// Encodes Razorpay's wire shape, so a decoded order round-trips.
+    public func encode(to encoder: any Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encodeMoney(amount, .amount)
+        try c.encode(amount.currency, forKey: .currency)
+        try c.encodeMoney(amountPaid, .amountPaid)
+        try c.encodeMoney(amountDue, .amountDue)
+        try c.encodeIfPresent(receipt, forKey: .receipt)
+        try c.encodeIfPresent(offerID, forKey: .offerID)
+        try c.encode(status, forKey: .status)
+        try c.encode(attempts, forKey: .attempts)
+        try c.encode(notes, forKey: .notes)
+        try c.encode(createdAt, forKey: .createdAt)
+    }
 }

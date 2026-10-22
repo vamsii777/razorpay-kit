@@ -63,3 +63,19 @@ struct WebhookWiringTests {
         #expect(name == "fund_account.validation.completed")
     }
 }
+
+@Suite("Core models round-trip")
+struct CoreModelCodableTests {
+    func roundTrip<T: Codable & Equatable>(_ type: T.Type, _ json: String) throws {
+        let value = try RazorpayCoding.decoder.decode(T.self, from: Data(json.utf8))
+        #expect(try RazorpayCoding.decoder.decode(T.self, from: RazorpayCoding.encoder.encode(value)) == value)
+    }
+
+    @Test func paymentOrderRefundCustomer() throws {
+        try roundTrip(Payment.self, Fixtures.payment)
+        try roundTrip(Payment.self, Fixtures.failedPayment)
+        try roundTrip(Order.self, Fixtures.order)
+        try roundTrip(Refund.self, Fixtures.refund)
+        try roundTrip(Customer.self, Fixtures.customer)
+    }
+}
