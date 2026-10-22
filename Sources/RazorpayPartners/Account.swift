@@ -45,7 +45,7 @@ public struct Account: Sendable, Hashable, Identifiable, Decodable {
         public static let suspended: Self = "suspended"
     }
 
-    /// The body for ``RazorpayClient/Accounts/create(_:options:)``.
+    /// The body for `accounts.create(_:options:)`.
     public struct Create: Sendable, Hashable, Encodable {
         public var email: String
         public var phone: String

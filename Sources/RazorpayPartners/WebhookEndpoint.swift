@@ -19,7 +19,7 @@ public struct WebhookEndpoint: Sendable, Hashable, Identifiable, Decodable {
     public let createdAt: Date?
     public let updatedAt: Date?
 
-    /// The body for ``RazorpayClient/WebhookEndpoints/create(_:account:options:)``.
+    /// The body for `webhookEndpoints.create(_:account:options:)`.
     ///
     /// The `secret` is sent to Razorpay and never logged: this type redacts it in `description` and mirrors.
     public struct Create: Sendable, Hashable, Encodable, CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
@@ -57,7 +57,7 @@ public struct WebhookEndpoint: Sendable, Hashable, Identifiable, Decodable {
         }
     }
 
-    /// Changes for ``RazorpayClient/WebhookEndpoints/update(_:account:_:options:)``. Razorpay requires `url` and `events`.
+    /// Changes for `webhookEndpoints.update(_:account:_:options:)`. Razorpay requires `url` and `events`.
     public typealias Update = Create
 
     enum CodingKeys: String, CodingKey {
