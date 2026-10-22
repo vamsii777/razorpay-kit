@@ -21,20 +21,22 @@ extension HTTPClientRequest.Body {
 
 struct RazorpayAPIHandler {
     private let httpClient: HTTPClient
-    private let key: String
-    private let secret: String
-    
+    /// Precomputed `Basic` credentials. Never exposed via description, mirror or errors.
+    private let authorization: String
+
     public init(httpClient: HTTPClient, key: String, secret: String) {
         self.httpClient = httpClient
-        self.key = key
-        self.secret = secret
+        self.authorization = Self.basicAuthorization(key: key, secret: secret)
     }
-    
+
+    static func basicAuthorization(key: String, secret: String) -> String {
+        "Basic " + Data("\(key):\(secret)".utf8).base64EncodedString()
+    }
+
     private func authorizationHeader() -> String {
-        let credentials = "\(key):\(secret)".data(using: .utf8)!.base64EncodedString()
-        return "Basic \(credentials)"
+        authorization
     }
-    
+
     public func sendRequest(method: HTTPMethod,
                             path: String,
                             queryParams: [String: String]? = nil,
@@ -59,4 +61,10 @@ struct RazorpayAPIHandler {
         let response = try await httpClient.execute(request, timeout: .seconds(60))
         return response
     }
+}
+
+extension RazorpayAPIHandler: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    var description: String { "RazorpayAPIHandler(credentials: <redacted>)" }
+    var debugDescription: String { description }
+    var customMirror: Mirror { Mirror(self, children: ["credentials": "<redacted>"], displayStyle: .struct) }
 }
