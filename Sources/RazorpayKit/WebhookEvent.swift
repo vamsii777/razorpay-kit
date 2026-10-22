@@ -22,6 +22,9 @@ public enum WebhookEvent: Sendable, Hashable {
     case refundCreated(Refund)
     case refundProcessed(Refund)
     case refundFailed(Refund)
+    case downtimeStarted(Downtime)
+    case downtimeUpdated(Downtime)
+    case downtimeResolved(Downtime)
     /// An event this SDK does not model yet, with its raw `payload`.
     case unknown(name: String, payload: JSONValue)
 
@@ -35,7 +38,18 @@ public enum WebhookEvent: Sendable, Hashable {
         case .refundCreated: return RazorpayWebhook.Name.refundCreated.rawValue
         case .refundProcessed: return RazorpayWebhook.Name.refundProcessed.rawValue
         case .refundFailed: return RazorpayWebhook.Name.refundFailed.rawValue
+        case .downtimeStarted: return RazorpayWebhook.Name.downtimeStarted.rawValue
+        case .downtimeUpdated: return RazorpayWebhook.Name.downtimeUpdated.rawValue
+        case .downtimeResolved: return RazorpayWebhook.Name.downtimeResolved.rawValue
         case .unknown(let name, _): return name
+        }
+    }
+
+    /// The downtime involved, if any.
+    public var downtime: Downtime? {
+        switch self {
+        case .downtimeStarted(let d), .downtimeUpdated(let d), .downtimeResolved(let d): return d
+        default: return nil
         }
     }
 
@@ -62,6 +76,9 @@ public enum WebhookEvent: Sendable, Hashable {
         case .refundCreated: return e(Refund.self).map(Self.refundCreated)
         case .refundProcessed: return e(Refund.self).map(Self.refundProcessed)
         case .refundFailed: return e(Refund.self).map(Self.refundFailed)
+        case .downtimeStarted: return e(Downtime.self).map(Self.downtimeStarted)
+        case .downtimeUpdated: return e(Downtime.self).map(Self.downtimeUpdated)
+        case .downtimeResolved: return e(Downtime.self).map(Self.downtimeResolved)
         default: return .success(.unknown(name: w.name.rawValue, payload: w.payload))
         }
     }

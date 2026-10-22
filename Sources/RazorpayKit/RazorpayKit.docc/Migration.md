@@ -14,6 +14,13 @@
 | `extraHeaders: ["X-Razorpay-Account": acc]` | `options: .init(accountID: acc)` |
 | `RazorpaySignature.verifyWebhook(body:signature:secret:)` → `Bool` | `try client.webhooks.verify(body, signature:)` → ``RazorpayWebhook`` (`.event` → ``WebhookEvent``) |
 | `RazorpaySignature.verifyPayment(orderID:paymentID:signature:secret:)` | `try client.verify(CheckoutResponse(...))` |
+| `client.payment.fetchPaymentDowntime()` (deprecated) | `try await client.payments.downtimes()` → `[Downtime]` |
+| `client.payment.fetchPaymentDowntimeById(downtimeId: id)` (deprecated) | `try await client.payments.downtime(id)` |
+| `client.payment.validateVpa(data: ["vpa": v])` | `try await client.payments.validateVPA(v)` |
+| `client.payment.fetchCardDetails(paymentID: id)` | `try await client.payments.card(of: id)` |
+| `client.payment.fetchMethods()` | `try await client.payments.methods()` |
+| `client.payment.createPaymentJson(data:)` / `createRecurringPayment(data:)` | `payments.create(PaymentRequest(...))` / `payments.createRecurring(...)` |
+| `client.payment.otpGenerate/otpSubmit/otpResend` | `payments.generateOTP(for:)`, `submitOTP(_:for:)`, `resendOTP(for:)` |
 | Endpoints without a typed API | `client.raw.send(.POST, "/v1/…", body: [...])` |
 
 The singular dictionary routes (`client.payment`, `client.order`, …) still work for endpoints

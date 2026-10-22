@@ -38,6 +38,7 @@ error you ever see is ``RazorpayError``. On Swift 6 compilers that's enforced wi
 
 ### Verification
 - <doc:Webhooks>
+- <doc:Downtimes>
 - ``WebhookEvent``
 - ``CheckoutResponse``
 - ``PaymentLinkCallback``
