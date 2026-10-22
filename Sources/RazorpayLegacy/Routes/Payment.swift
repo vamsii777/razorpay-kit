@@ -347,12 +347,14 @@ public struct RazorpayPaymentRoutes: PaymentRoutes, Sendable {
         return try await RZPRUTL.processResponse(response)
     }
 
+    @available(*, deprecated, message: "Use payments.downtimes(), which returns typed [Downtime].")
     public func fetchPaymentDowntime(queryParams: [String: String]? = nil, extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/downtimes"
         let response = try await client.sendRequest(method: .GET, path: url, queryParams: queryParams, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
+    @available(*, deprecated, message: "Use payments.downtime(_:), which returns a typed Downtime.")
     public func fetchPaymentDowntimeById(downtimeId: String, queryParams: [String: String]? = nil, extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.paymentURL)/downtimes/\(downtimeId)"
         let response = try await client.sendRequest(method: .GET, path: url, queryParams: queryParams, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
