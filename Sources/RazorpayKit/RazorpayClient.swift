@@ -47,7 +47,7 @@ import AsyncHTTPClient
 /// - ``iin``
 /// - ``qrCode``
 /// - ``webhook``
-public actor RazorpayClient {
+public struct RazorpayClient: Sendable {
     
     /// Routes for managing Razorpay accounts
     public var account: RazorpayAccountRoutes
@@ -159,11 +159,11 @@ public actor RazorpayClient {
 
 extension RazorpayClient: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     /// A description that never includes the API key or secret.
-    public nonisolated var description: String { "RazorpayClient(credentials: <redacted>)" }
+    public var description: String { "RazorpayClient(credentials: <redacted>)" }
     /// A debug description that never includes the API key or secret.
-    public nonisolated var debugDescription: String { description }
+    public var debugDescription: String { description }
     /// A mirror that hides the API key, secret and Authorization header.
-    public nonisolated var customMirror: Mirror {
-        Mirror(self, children: ["credentials": "<redacted>"], displayStyle: .class)
+    public var customMirror: Mirror {
+        Mirror(self, children: ["credentials": "<redacted>"], displayStyle: .struct)
     }
 }
