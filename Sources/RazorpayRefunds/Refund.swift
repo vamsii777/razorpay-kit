@@ -33,7 +33,7 @@ public struct Refund: Sendable, Hashable, Identifiable, Codable {
         public static let instant: Self = "instant"
     }
 
-    /// The body for ``RazorpayClient/Payments/refund(_:_:options:)``.
+    /// The body for `payments.refund(_:_:options:)`.
     public struct Create: Sendable, Hashable, Encodable {
         /// Amount in minor units. `nil` refunds the full remaining amount.
         public var amount: Int?

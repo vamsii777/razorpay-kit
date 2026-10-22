@@ -1,7 +1,7 @@
 import Foundation
 import RazorpayCore
 
-/// The result of ``RazorpayClient/Payments/validateVPA(_:options:)``.
+/// The result of `payments.validateVPA(_:options:)`.
 public struct VPAValidation: Sendable, Hashable, Codable {
     public let vpa: String
     /// `true` when the UPI ID exists and can receive collect requests.

@@ -24,7 +24,7 @@ public struct Order: Sendable, Hashable, Identifiable, Codable {
         public static let paid: Self = "paid"
     }
 
-    /// The body for ``RazorpayClient/Orders/create(_:options:)``.
+    /// The body for `orders.create(_:options:)`.
     public struct Create: Sendable, Hashable, Encodable {
         public var amount: Money
         public var receipt: String?
