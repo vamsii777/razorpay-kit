@@ -129,6 +129,6 @@ struct SettlementTests {
     }
 
     @Test func settlementWebhookName() {
-        #expect(Settlement.payloadKey == "settlement" && RazorpayWebhook.Name.settlementProcessed.rawValue == "settlement.processed")
+        #expect(Settlement.payloadKey == "settlement")
     }
 }

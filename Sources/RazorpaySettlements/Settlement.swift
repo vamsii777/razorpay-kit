@@ -39,10 +39,6 @@ public struct Settlement: Sendable, Hashable, Identifiable, Decodable {
 
 extension Settlement: WebhookEntity { public static var payloadKey: String { "settlement" } }
 
-extension RazorpayWebhook.Name {
-    public static let settlementProcessed: Self = "settlement.processed"
-}
-
 /// An instant (on-demand) settlement. See https://razorpay.com/docs/api/settlements/instant/.
 public struct InstantSettlement: Sendable, Hashable, Identifiable, Decodable {
     public typealias ID = InstantSettlementID
