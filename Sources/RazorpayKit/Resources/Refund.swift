@@ -20,7 +20,7 @@ public protocol RefundRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `RefundRoutes` protocol for Razorpay refund operations.
-public struct RazorpayRefundRoutes: RefundRoutes {
+public struct RazorpayRefundRoutes: RefundRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

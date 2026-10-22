@@ -29,7 +29,7 @@ public protocol RazorpayDowntimeRoutes: Sendable {
 }
 
 /// Implementation of RazorpayDowntimeRoutes using RazorpayKit
-public struct RazorpayKitDowntimeRoutes: RazorpayDowntimeRoutes {
+public struct RazorpayKitDowntimeRoutes: RazorpayDowntimeRoutes, Sendable {
     private let client: RazorpayClient
     
     public init(client: RazorpayClient) {

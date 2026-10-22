@@ -20,7 +20,7 @@ public protocol ProductRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `ProductRoutes` protocol for Razorpay product operations.
-public struct RazorpayProductRoutes: ProductRoutes {
+public struct RazorpayProductRoutes: ProductRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

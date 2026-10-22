@@ -23,7 +23,7 @@ public protocol WebhookRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `WebhookRoutes` protocol for Razorpay webhook operations.
-public struct RazorpayWebhookRoutes: WebhookRoutes {
+public struct RazorpayWebhookRoutes: WebhookRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

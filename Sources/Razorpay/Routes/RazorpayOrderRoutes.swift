@@ -61,7 +61,7 @@ public protocol RazorpayOrderRoutes: Sendable {
 /// ## Topics
 /// ### Creating an Instance
 /// - ``init(client:)``
-public struct RazorpayKitOrderRoutes: RazorpayOrderRoutes {
+public struct RazorpayKitOrderRoutes: RazorpayOrderRoutes, Sendable {
     private let client: RazorpayClient
 
     /// Creates a new instance with the specified client

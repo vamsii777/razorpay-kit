@@ -256,7 +256,7 @@ public protocol PaymentRoutes: RazorpayAPIRoute {
 /// let paymentData = ["amount": 1000, "currency": "INR"]
 /// let newPayment = try await paymentRoutes.createPaymentJson(data: paymentData)
 /// ```
-public struct RazorpayPaymentRoutes: PaymentRoutes {
+public struct RazorpayPaymentRoutes: PaymentRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

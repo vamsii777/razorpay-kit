@@ -1,4 +1,4 @@
-// swift-tools-version:5.8
+// swift-tools-version:5.10
 import PackageDescription
 
 let package = Package(
@@ -46,8 +46,7 @@ let package = Package(
 
 var swiftSettings: [SwiftSetting] { 
     [
-        .enableUpcomingFeature("StrictConcurrency"),
+        .enableExperimentalFeature("StrictConcurrency=complete"),
         .enableUpcomingFeature("ExistentialAny"),
-        .enableUpcomingFeature("FullTypedThrows"),
     ] 
 }

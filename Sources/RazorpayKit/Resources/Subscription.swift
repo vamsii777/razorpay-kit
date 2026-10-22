@@ -41,7 +41,7 @@ public protocol SubscriptionRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `SubscriptionRoutes` protocol for Razorpay subscription operations.
-public struct RazorpaySubscriptionRoutes: SubscriptionRoutes {
+public struct RazorpaySubscriptionRoutes: SubscriptionRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

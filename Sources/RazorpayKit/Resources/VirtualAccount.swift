@@ -32,7 +32,7 @@ public protocol VirtualAccountRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `VirtualAccountRoutes` protocol for Razorpay virtual account operations.
-public struct RazorpayVirtualAccountRoutes: VirtualAccountRoutes {
+public struct RazorpayVirtualAccountRoutes: VirtualAccountRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

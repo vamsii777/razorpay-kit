@@ -26,7 +26,7 @@ public protocol StakeholderRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `StakeholderRoutes` protocol for Razorpay stakeholder operations.
-public struct RazorpayStakeholderRoutes: StakeholderRoutes {
+public struct RazorpayStakeholderRoutes: StakeholderRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

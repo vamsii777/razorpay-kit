@@ -3,7 +3,7 @@
 /// This struct contains static constants for all the API endpoints used to interact with
 /// Razorpay's REST API. The constants include the base URL and paths for various resources
 /// like orders, payments, customers etc.
-public struct APIConstants {
+public struct APIConstants: Sendable {
     /// The base URL for all Razorpay API requests
     static let baseURL = "https://api.razorpay.com"
     
