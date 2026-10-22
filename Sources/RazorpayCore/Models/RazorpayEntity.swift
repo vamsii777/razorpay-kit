@@ -19,3 +19,27 @@ package struct NotesBody: Encodable, Sendable {
     package let notes: Notes
     package init(notes: Notes) { self.notes = notes }
 }
+
+extension RazorpayEntity {
+    public enum Card {}
+}
+
+public typealias CardID = RazorpayID<RazorpayEntity.Card>
+
+/// A coding key for arbitrary JSON object keys, for models that keep unmodelled fields.
+package struct AnyCodingKey: CodingKey, Hashable, Sendable {
+    package let stringValue: String
+    package var intValue: Int? { nil }
+    package init(_ string: String) { stringValue = string }
+    package init?(stringValue: String) { self.stringValue = stringValue }
+    package init?(intValue: Int) { stringValue = String(intValue) }
+}
+
+extension KeyedDecodingContainer {
+    /// Decodes a flag Razorpay sends as `true`/`false` or `1`/`0`. Missing or `null` is `nil`.
+    package func decodeFlagIfPresent(_ key: Key) throws -> Bool? {
+        guard contains(key), try !decodeNil(forKey: key) else { return nil }
+        if let bool = try? decode(Bool.self, forKey: key) { return bool }
+        return try decode(Int.self, forKey: key) != 0
+    }
+}

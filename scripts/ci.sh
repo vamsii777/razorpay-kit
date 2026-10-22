@@ -12,6 +12,10 @@ fi
 
 ./scripts/check-typed-throws.sh
 ./scripts/check-manifests.sh
+# Every product must build on its own (also re-checks manifest parity).
+# Only the newest toolchain runs it by default (the 5.10 and 6.0 CI legs skip it for speed).
+if swift --version 2>&1 | grep -Eq "Swift version (5\.10|6\.0)(\.|[^0-9])"; then default_products=0; else default_products=1; fi
+CHECK_PRODUCTS="${CHECK_PRODUCTS:-$default_products}"
 swift --version
 # Swift 5.10: newer swift-system releases need a newer compiler; pin to 1.5.0.
 if swift --version 2>&1 | grep -q 'Swift version 5\.10'; then
@@ -24,4 +28,7 @@ if [[ "${RUN_TESTS:-1}" == "1" ]]; then
 else
   # Build-only (e.g. Swift 5.10, which has no swift-testing): skip test targets.
   swift build -Xswiftc -warnings-as-errors
+fi
+if [[ "$CHECK_PRODUCTS" == "1" ]]; then
+  ./scripts/check-products.sh
 fi
