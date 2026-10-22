@@ -60,7 +60,8 @@ final class TransportTests: XCTestCase {
         do {
             _ = try await client.order.fetch(orderID: "order_TEST", queryParams: nil, extraHeaders: nil)
             XCTFail("expected an error")
-        } catch is Boom {
+        } catch RazorpayError.transport(let underlying) {
+            XCTAssertTrue(underlying is Boom)
         }
     }
 }

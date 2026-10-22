@@ -19,8 +19,8 @@ final class ErrorTests: XCTestCase {
     }
 
     private func apiError(_ error: RazorpayError?, file: StaticString = #filePath, line: UInt = #line) throws -> RazorpayError.APIError {
-        guard case .apiError(let apiError)? = error else {
-            XCTFail("expected .apiError, got \(String(describing: error))", file: file, line: line)
+        guard case .api(let apiError)? = error else {
+            XCTFail("expected .api, got \(String(describing: error))", file: file, line: line)
             throw XCTSkip("no api error")
         }
         return apiError
@@ -38,7 +38,7 @@ final class ErrorTests: XCTestCase {
         XCTAssertEqual(api.reason, "input_validation_failed")
         XCTAssertEqual(api.field, "id")
         XCTAssertEqual(api.metadata, ["order_id": "order_TEST"])
-        XCTAssertEqual(error?.isValidPaymentId, true)
+        XCTAssertEqual(error?.isValidationFailure, true)
     }
 
     func testUnauthorized401() async throws {
@@ -88,10 +88,11 @@ final class ErrorTests: XCTestCase {
 
     func testMalformedSuccessBodyIsInvalidResponse() async throws {
         let error = await error(status: .ok, body: "not json")
-        guard case .invalidResponse? = error else {
-            return XCTFail("expected .invalidResponse, got \(String(describing: error))")
+        guard case .decoding(let failure)? = error else {
+            return XCTFail("expected .decoding, got \(String(describing: error))")
         }
-        XCTAssertNil(error?.statusCode)
+        XCTAssertEqual(failure.statusCode, 200)
+        XCTAssertEqual(error?.statusCode, 200)
     }
 
     func testErrorCodeRoundTripsUnknownValues() throws {

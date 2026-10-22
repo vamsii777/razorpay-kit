@@ -47,7 +47,10 @@ struct RazorpayAPIHandler: Sendable {
             "Content-Type": "application/json",
             "Accept": "application/json"
         ]
-        headers.forEach { requestHeaders.add(name: $0.name, value: $0.value) }
+        headers.forEach { header in
+            guard header.name.lowercased() != "authorization" else { return }
+            requestHeaders.replaceOrAdd(name: header.name, value: header.value)
+        }
         let request = RazorpayHTTPRequest(
             method: method,
             path: path,
@@ -55,7 +58,11 @@ struct RazorpayAPIHandler: Sendable {
             headers: requestHeaders,
             body: body
         )
-        return try await transport.send(request)
+        do {
+            return try await transport.send(request)
+        } catch {
+            throw RazorpayError.wrap(error)
+        }
     }
 }
 

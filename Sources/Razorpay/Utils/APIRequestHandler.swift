@@ -13,14 +13,14 @@ internal enum APIRequestHandler {
             
             // Defensive: RazorpayKit already throws for non-2xx and for `error` payloads.
             if let apiError = RazorpayError.APIError(errorObject: response, statusCode: nil) {
-                throw RazorpayError.apiError(apiError)
+                throw RazorpayError.api(apiError)
             }
 
             return try T(response: response)
         } catch let error as RazorpayError {
             throw error
         } catch {
-            throw RazorpayError.invalidResponse(error.localizedDescription)
+            throw RazorpayError.decoding(.init(error, type: T.self, statusCode: nil))
         }
     }
     
@@ -32,7 +32,7 @@ internal enum APIRequestHandler {
         message: String
     ) throws {
         guard value >= minimum else {
-            throw RazorpayError.apiError(
+            throw RazorpayError.api(
                 RazorpayError.APIError(
                     code: .badRequestError,
                     description: message,
