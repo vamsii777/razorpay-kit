@@ -11,6 +11,10 @@ if [[ -n "${SWIFT_IMAGE:-}" ]]; then
 fi
 
 swift --version
+# Swift 5.10: newer swift-system releases need a newer compiler; pin to 1.5.0.
+if swift --version 2>&1 | grep -q 'Swift version 5\.10'; then
+  swift package resolve swift-system --version 1.5.0
+fi
 if [[ "${RUN_TESTS:-1}" == "1" ]]; then
   swift build --build-tests -Xswiftc -warnings-as-errors
   swift test --skip-build ${SWIFT_TEST_ARGS:-}
