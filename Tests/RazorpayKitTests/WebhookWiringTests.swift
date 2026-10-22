@@ -63,3 +63,31 @@ struct WebhookWiringTests {
         #expect(name == "fund_account.validation.completed")
     }
 }
+
+@Suite("Billing webhook wiring")
+struct BillingWebhookWiringTests {
+    private func event(_ name: String, _ payload: String) throws -> WebhookEvent {
+        let body = #"{"entity":"event","event":"\#(name)","contains":[],"payload":\#(payload),"created_at":1700000000}"#
+        return try RazorpayWebhook.decode(Array(body.utf8)).get().event
+    }
+
+    @Test(arguments: ["subscription.authenticated", "subscription.activated", "subscription.charged", "subscription.completed",
+                      "subscription.updated", "subscription.pending", "subscription.halted", "subscription.cancelled",
+                      "subscription.paused", "subscription.resumed"])
+    func subscriptions(name: String) throws {
+        let withPayment = name == "subscription.charged"
+        let payload = #"{"subscription":{"entity":\#(BillingFixtures.subscription)}\#(withPayment ? #","payment":{"entity":\#(Fixtures.payment)}"# : "")}"#
+        let e = try event(name, payload)
+        #expect(e.name == name)
+        #expect((e.payment != nil) == withPayment)
+    }
+
+    @Test func invoices() throws {
+        let paid = try event("invoice.paid", #"{"invoice":{"entity":\#(BillingFixtures.invoice)},"payment":{"entity":\#(Fixtures.payment)}}"#)
+        guard case .invoicePaid(_, let p) = paid else { Issue.record("got \(paid)"); return }
+        #expect(p?.id == "pay_TEST000001")
+        #expect(try event("invoice.partially_paid", #"{"invoice":{"entity":\#(BillingFixtures.invoice)}}"#).name == "invoice.partially_paid")
+        #expect(try event("invoice.expired", #"{"invoice":{"entity":\#(BillingFixtures.invoice)}}"#).name == "invoice.expired")
+        #expect(throws: RazorpayError.self) { try event("subscription.charged", "{}") }
+    }
+}

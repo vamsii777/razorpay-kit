@@ -35,8 +35,8 @@ struct WebhookVerifyTests {
         let f = WebhookFixtures.unknown
         let event = try razorpay.webhooks.verify(f.body, signature: f.signature).event
         guard case .unknown(let name, let payload) = event else { Issue.record("got \(event)"); return }
-        #expect(name == "subscription.charged")
-        #expect(payload["subscription"]?["entity"]?["id"] == "sub_TEST000001")
+        #expect(name == "dispute.created")
+        #expect(payload["dispute"]?["entity"]?["id"] == "disp_TEST000001")
     }
 
     @Test func tamperedBodyOrMissingHeaderIsMismatch() {
