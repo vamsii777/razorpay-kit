@@ -36,7 +36,7 @@ public struct RazorpayAccountRoutes: AccountRoutes, Sendable {
     
     public func create(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v2)\(APIConstants.accountURL)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -49,7 +49,7 @@ public struct RazorpayAccountRoutes: AccountRoutes, Sendable {
 
     public func edit(accountId: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v2)\(APIConstants.accountURL)/\(accountId)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .PATCH, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }

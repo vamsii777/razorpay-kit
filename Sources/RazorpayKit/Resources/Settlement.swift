@@ -66,7 +66,7 @@ public struct RazorpaySettlementRoutes: SettlementRoutes, Sendable {
 
     public func createOnDemandSettlement(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)\(APIConstants.settlementURL)/ondemand"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }

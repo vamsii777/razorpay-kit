@@ -19,44 +19,39 @@ extension HTTPClientRequest.Body {
     }
 }
 
-struct RazorpayAPIHandler {
-    private let httpClient: HTTPClient
+struct RazorpayAPIHandler: Sendable {
+    private let transport: any RazorpayTransport
     private let key: String
     private let secret: String
-    
-    public init(httpClient: HTTPClient, key: String, secret: String) {
-        self.httpClient = httpClient
+
+    init(transport: any RazorpayTransport, key: String, secret: String) {
+        self.transport = transport
         self.key = key
         self.secret = secret
     }
-    
+
     private func authorizationHeader() -> String {
-        let credentials = "\(key):\(secret)".data(using: .utf8)!.base64EncodedString()
-        return "Basic \(credentials)"
+        "Basic " + Data("\(key):\(secret)".utf8).base64EncodedString()
     }
-    
-    public func sendRequest(method: HTTPMethod,
-                            path: String,
-                            queryParams: [String: String]? = nil,
-                            body: HTTPClientRequest.Body? = nil,
-                            headers: HTTPHeaders) async throws -> HTTPClientResponse {
-        
-        let queryString = RZPRUTL.convertToQueryString(queryParams)
-        let url = APIConstants.baseURL + path + queryString
-        
+
+    func sendRequest(method: HTTPMethod,
+                     path: String,
+                     queryParams: [String: String]? = nil,
+                     body: Data? = nil,
+                     headers: HTTPHeaders) async throws -> RazorpayHTTPResponse {
         var requestHeaders: HTTPHeaders = [
             "Authorization": authorizationHeader(),
             "Content-Type": "application/json",
             "Accept": "application/json"
         ]
         headers.forEach { requestHeaders.add(name: $0.name, value: $0.value) }
-
-        var request = HTTPClientRequest(url: url)
-        request.method = method
-        request.headers = requestHeaders
-        request.body = body
-        
-        let response = try await httpClient.execute(request, timeout: .seconds(60))
-        return response
+        let request = RazorpayHTTPRequest(
+            method: method,
+            path: path,
+            query: queryParams ?? [:],
+            headers: requestHeaders,
+            body: body
+        )
+        return try await transport.send(request)
     }
 }

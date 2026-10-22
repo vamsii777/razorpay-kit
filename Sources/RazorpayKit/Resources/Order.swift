@@ -74,7 +74,7 @@ public struct RazorpayOrderRoutes: OrderRoutes, Sendable {
     public func create(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let v1 = APIConstants.v1
         let url = "\(v1)\(APIConstants.orderURL)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -83,7 +83,7 @@ public struct RazorpayOrderRoutes: OrderRoutes, Sendable {
     public func update(orderID: String, data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let v1 = APIConstants.v1
         let url = "\(v1)\(APIConstants.orderURL)/\(orderID)"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }

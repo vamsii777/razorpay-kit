@@ -39,7 +39,7 @@ public struct RazorpayTokenRoutes: TokenRoutes, Sendable {
     
     public func create(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)/tokens"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
@@ -64,21 +64,21 @@ public struct RazorpayTokenRoutes: TokenRoutes, Sendable {
 
     public func fetchCardPropertiesByToken(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)/tokens/fetch"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
     public func deleteToken(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)/tokens/delete"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
 
     public func processPaymentOnAlternatePAorPG(data: [String: Any], extraHeaders: [String: String]? = nil) async throws -> [String: Any] {
         let url = "\(APIConstants.v1)/tokens/service_provider_tokens/token_transactional_data"
-        let requestBody = try HTTPClientRequest.Body.json(data)
+        let requestBody = try RZPRUTL.jsonBody(data)
         let response = try await client.sendRequest(method: .POST, path: url, body: requestBody, headers: RZPRUTL.convertToHTTPHeaders(extraHeaders))
         return try await RZPRUTL.processResponse(response)
     }
