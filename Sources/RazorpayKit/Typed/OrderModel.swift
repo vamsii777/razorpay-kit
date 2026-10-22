@@ -46,6 +46,9 @@ public struct Order: Sendable, Hashable, Identifiable, Decodable {
         }
 
         public func encode(to encoder: any Encoder) throws {
+            guard amount.amount > 0 else {
+                throw EncodingError.invalidValue(amount, .init(codingPath: [CodingKeys.amount], debugDescription: "order amount must be positive"))
+            }
             var c = encoder.container(keyedBy: CodingKeys.self)
             try c.encode(amount.amount, forKey: .amount)
             try c.encode(amount.currency, forKey: .currency)

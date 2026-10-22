@@ -21,6 +21,7 @@ the typed API doesn't cover yet.
 
 ## Breaking changes
 
+- The Vapor `Razorpay` product and target are gone, and so is the Vapor dependency. Use `RazorpayKit` directly. <doc:Vapor> shows the few lines that replace `Application.razorpay` and `Request.razorpay`.
 - `RazorpayClient` is a `Sendable` struct instead of an actor. Drop any `await` that was only
   there to reach a property.
 - ``RazorpayError``:
