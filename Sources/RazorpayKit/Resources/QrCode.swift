@@ -23,7 +23,7 @@ public protocol QRCodeRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `QRCodeRoutes` protocol for Razorpay QR code operations.
-public struct RazorpayQRCodeRoutes: QRCodeRoutes {
+public struct RazorpayQRCodeRoutes: QRCodeRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

@@ -26,7 +26,7 @@ public protocol AccountRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `AccountRoutes` protocol for Razorpay account operations.
-public struct RazorpayAccountRoutes: AccountRoutes {
+public struct RazorpayAccountRoutes: AccountRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 
@@ -75,6 +75,6 @@ public struct RazorpayAccountRoutes: AccountRoutes {
 }
 
 /// Represents parameters for file upload, this will need to be defined based on how your application handles file uploads.
-public struct FileUploadParams {
+public struct FileUploadParams: Sendable {
     // Define properties based on your file upload requirements.
 }

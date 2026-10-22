@@ -46,7 +46,7 @@ public protocol OrderRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `OrderRoutes` protocol.
-public struct RazorpayOrderRoutes: OrderRoutes {
+public struct RazorpayOrderRoutes: OrderRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

@@ -26,7 +26,7 @@ public protocol TransferRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `TransferRoutes` protocol for Razorpay transfer operations.
-public struct RazorpayTransferRoutes: TransferRoutes {
+public struct RazorpayTransferRoutes: TransferRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

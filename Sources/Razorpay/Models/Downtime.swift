@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a payment downtime event in the Razorpay system
-public struct Downtime: RazorpayResponse, Codable {
+public struct Downtime: RazorpayResponse, Codable, Sendable {
     /// Unique identifier of the downtime's occurrence
     public let id: String?
     
@@ -43,7 +43,7 @@ public struct Downtime: RazorpayResponse, Codable {
 }
 
 /// Payment methods that can experience downtime
-public enum DowntimeMethod: Codable {
+public enum DowntimeMethod: Codable, Sendable {
     /// Card payments
     case card
     /// Net banking payments
@@ -101,7 +101,7 @@ public enum DowntimeMethod: Codable {
 }
 
 /// Status of a downtime event
-public enum DowntimeStatus: String, Codable {
+public enum DowntimeStatus: String, Codable, Sendable {
     case scheduled
     case started
     case resolved
@@ -109,7 +109,7 @@ public enum DowntimeStatus: String, Codable {
 }
 
 /// Severity level of a downtime event
-public enum DowntimeSeverity: String, Codable {
+public enum DowntimeSeverity: String, Codable, Sendable {
     case high
     case medium
     case low
@@ -118,7 +118,7 @@ public enum DowntimeSeverity: String, Codable {
 /// Represents the payment instrument affected by the downtime
 /// All instrument parameters from the API are stored and accessible dynamically
 @dynamicMemberLookup
-public struct DowntimeInstrument: Codable {
+public struct DowntimeInstrument: Codable, Sendable {
     /// Internal storage for all instrument parameters
     private let parameters: [String: String]
 
@@ -209,7 +209,7 @@ private extension String {
 }
 
 /// Collection of downtime events
-public struct DowntimeCollection: RazorpayResponse, Codable {
+public struct DowntimeCollection: RazorpayResponse, Codable, Sendable {
     /// Type of collection
     public let entity: String?
     /// Number of items in the collection

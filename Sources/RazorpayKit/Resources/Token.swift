@@ -29,7 +29,7 @@ public protocol TokenRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `TokenRoutes` protocol for Razorpay token operations.
-public struct RazorpayTokenRoutes: TokenRoutes {
+public struct RazorpayTokenRoutes: TokenRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

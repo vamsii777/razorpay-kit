@@ -23,7 +23,7 @@ public protocol ItemRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `ItemRoutes` protocol for Razorpay item operations.
-public struct RazorpayItemRoutes: ItemRoutes {
+public struct RazorpayItemRoutes: ItemRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

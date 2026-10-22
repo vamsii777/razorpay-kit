@@ -35,7 +35,7 @@ public protocol InvoiceRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `InvoiceRoutes` protocol for Razorpay invoice operations.
-public struct RazorpayInvoiceRoutes: InvoiceRoutes {
+public struct RazorpayInvoiceRoutes: InvoiceRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

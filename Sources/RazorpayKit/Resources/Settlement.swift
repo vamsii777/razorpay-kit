@@ -26,7 +26,7 @@ public protocol SettlementRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `SettlementRoutes` protocol for Razorpay settlement operations.
-public struct RazorpaySettlementRoutes: SettlementRoutes {
+public struct RazorpaySettlementRoutes: SettlementRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

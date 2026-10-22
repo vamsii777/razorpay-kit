@@ -26,7 +26,7 @@ public protocol RazorpayRefundRoutes: Sendable {
     func fetch(paymentId: String, refundId: String) async throws -> Refund
 }
 
-public struct RazorpayKitRefundRoutes: RazorpayRefundRoutes {
+public struct RazorpayKitRefundRoutes: RazorpayRefundRoutes, Sendable {
     private let client: RazorpayClient
     
     init(client: RazorpayClient) {

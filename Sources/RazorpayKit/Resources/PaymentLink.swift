@@ -26,7 +26,7 @@ public protocol PaymentLinkRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `PaymentLinkRoutes` protocol for Razorpay payment link operations.
-public struct RazorpayPaymentLinkRoutes: PaymentLinkRoutes {
+public struct RazorpayPaymentLinkRoutes: PaymentLinkRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

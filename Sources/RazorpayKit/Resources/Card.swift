@@ -14,7 +14,7 @@ public protocol CardRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `CardRoutes` protocol for Razorpay card operations.
-public struct RazorpayCardRoutes: CardRoutes {
+public struct RazorpayCardRoutes: CardRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

@@ -11,7 +11,7 @@ public protocol IINRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `IINRoutes` protocol for Razorpay IIN operations.
-public struct RazorpayIINRoutes: IINRoutes {
+public struct RazorpayIINRoutes: IINRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

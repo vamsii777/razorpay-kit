@@ -14,7 +14,7 @@ public protocol FundAccountRoutes: RazorpayAPIRoute {
 }
 
 /// A struct implementing the `FundAccountRoutes` protocol for Razorpay fund account operations.
-public struct RazorpayFundAccountRoutes: FundAccountRoutes {
+public struct RazorpayFundAccountRoutes: FundAccountRoutes, Sendable {
     public var headers: HTTPHeaders = [:]
     private let client: RazorpayAPIHandler
 

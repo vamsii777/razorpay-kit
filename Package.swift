@@ -1,4 +1,4 @@
-// swift-tools-version:5.8
+// swift-tools-version:5.10
 import PackageDescription
 
 let package = Package(
@@ -15,12 +15,17 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.1.0"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.62.0"),
         .package(url: "https://github.com/vapor/vapor.git", from: "4.112.1")
     ],
     targets: [
         .target(name: "RazorpayKit", 
             dependencies: [
-                .product(name: "AsyncHTTPClient", package: "async-http-client")
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "NIO", package: "swift-nio"),
+                .product(name: "NIOCore", package: "swift-nio"),
+                .product(name: "NIOHTTP1", package: "swift-nio"),
+                .product(name: "NIOFoundationCompat", package: "swift-nio"),
             ],
             swiftSettings: swiftSettings
         ),
@@ -46,8 +51,7 @@ let package = Package(
 
 var swiftSettings: [SwiftSetting] { 
     [
-        .enableUpcomingFeature("StrictConcurrency"),
+        .enableExperimentalFeature("StrictConcurrency=complete"),
         .enableUpcomingFeature("ExistentialAny"),
-        .enableUpcomingFeature("FullTypedThrows"),
     ] 
 }
