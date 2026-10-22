@@ -54,7 +54,7 @@ public struct RazorpayHTTPResponse: Sendable {
 /// Sends HTTP requests to the Razorpay API.
 ///
 /// The default is ``AsyncHTTPClientTransport``. Inject your own transport, such as a mock in
-/// tests, through ``RazorpayClient/init(transport:key:secret:)``. See https://razorpay.com/docs/api.
+/// tests, through ``RazorpayClient/init(transport:key:secret:webhookSecret:)``. See https://razorpay.com/docs/api.
 public protocol RazorpayTransport: Sendable {
     /// Sends a request and returns the raw response. Non-2xx statuses are returned, not thrown.
     func send(_ request: RazorpayHTTPRequest) async throws -> RazorpayHTTPResponse

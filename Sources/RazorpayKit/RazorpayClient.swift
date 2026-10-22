@@ -122,7 +122,7 @@ public struct RazorpayClient: Sendable {
     ///   - key: Your Razorpay API key
     ///   - secret: Your Razorpay API secret
     ///   - webhookSecret: The secret set on your webhook in the Dashboard. Needed for
-    ///     ``Webhooks-swift.struct/verify(_:signature:secret:)``.
+    ///     `webhooks.verify(_:signature:)`.
     public init(_ httpClient: HTTPClient = HTTPClient.shared, key: String, secret: String, webhookSecret: String? = nil) {
         self.init(transport: AsyncHTTPClientTransport(httpClient: httpClient), key: key, secret: secret, webhookSecret: webhookSecret)
     }
