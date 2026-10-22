@@ -1,6 +1,8 @@
 import Foundation
 import Testing
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 private enum Widget {}
 

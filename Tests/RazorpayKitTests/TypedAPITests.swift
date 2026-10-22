@@ -1,7 +1,9 @@
 import Foundation
 import NIOHTTP1
 import Testing
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 private func client(_ mock: MockTransport) -> RazorpayClient {
     RazorpayClient(transport: mock, key: TestKeys.key, secret: TestKeys.secret)

@@ -1,6 +1,8 @@
 import Foundation
 import Testing
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 /// Keeps the README and DocC snippets compiling and behaving.
 @Suite("Doc examples")
@@ -21,7 +23,7 @@ struct DocExampleTests {
         var statuses: [Refund.Status] = []
         for try await refund in razorpay.payments.refunds(of: payment.id) { statuses.append(refund.status) }
         #expect(statuses == [.processed])
-        let event = try razorpay.webhooks.verify(WebhookFixtures.captured.body, signature: WebhookFixtures.captured.signature)
+        let event = try razorpay.webhooks.verify(WebhookFixtures.captured.body, signature: WebhookFixtures.captured.signature).event
         guard case .paymentCaptured(let captured) = event else { Issue.record("got \(event)"); return }
         #expect(captured.id == payment.id)
     }

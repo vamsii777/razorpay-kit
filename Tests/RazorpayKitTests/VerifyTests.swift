@@ -1,6 +1,8 @@
 import Foundation
 import Testing
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 private let razorpay = RazorpayClient(transport: MockTransport(), key: TestKeys.key, secret: "test_key_secret", webhookSecret: WebhookFixtures.secret)
 
@@ -8,7 +10,7 @@ private let razorpay = RazorpayClient(transport: MockTransport(), key: TestKeys.
 struct WebhookVerifyTests {
     @Test func paymentCapturedIsTyped() throws {
         let f = WebhookFixtures.captured
-        let event = try razorpay.webhooks.verify(f.body, signature: f.signature)
+        let event = try razorpay.webhooks.verify(f.body, signature: f.signature).event
         guard case .paymentCaptured(let payment) = event else { Issue.record("got \(event)"); return }
         #expect(payment.amount == .inr(paise: 50_000))
         #expect(event.name == "payment.captured" && event.payment?.id == "pay_TEST000001")
@@ -16,22 +18,22 @@ struct WebhookVerifyTests {
 
     @Test func rawBytesUppercaseAndPaddedSignature() throws {
         let f = WebhookFixtures.captured
-        let event = try razorpay.webhooks.verify(Data(f.body.utf8), signature: " \(f.signature.uppercased())\n")
+        let event = try razorpay.webhooks.verify(Data(f.body.utf8), signature: " \(f.signature.uppercased())\n").event
         #expect(event.name == "payment.captured")
     }
 
     @Test func orderPaidAndRefundProcessed() throws {
-        let paid = try razorpay.webhooks.verify(WebhookFixtures.orderPaid.body, signature: WebhookFixtures.orderPaid.signature)
+        let paid = try razorpay.webhooks.verify(WebhookFixtures.orderPaid.body, signature: WebhookFixtures.orderPaid.signature).event
         guard case .orderPaid(let order, let payment) = paid else { Issue.record("got \(paid)"); return }
         #expect(order.id == "order_TEST000001" && payment.orderID == order.id)
-        let refunded = try razorpay.webhooks.verify(WebhookFixtures.refundProcessed.body, signature: WebhookFixtures.refundProcessed.signature)
+        let refunded = try razorpay.webhooks.verify(WebhookFixtures.refundProcessed.body, signature: WebhookFixtures.refundProcessed.signature).event
         guard case .refundProcessed(let refund) = refunded else { Issue.record("got \(refunded)"); return }
         #expect(refund.status == .processed)
     }
 
     @Test func unknownEventsKeepPayload() throws {
         let f = WebhookFixtures.unknown
-        let event = try razorpay.webhooks.verify(f.body, signature: f.signature)
+        let event = try razorpay.webhooks.verify(f.body, signature: f.signature).event
         guard case .unknown(let name, let payload) = event else { Issue.record("got \(event)"); return }
         #expect(name == "subscription.charged")
         #expect(payload["subscription"]?["entity"]?["id"] == "sub_TEST000001")
@@ -41,7 +43,7 @@ struct WebhookVerifyTests {
         let f = WebhookFixtures.captured
         for (body, signature) in [(f.body + " ", f.signature as String?), (f.body, nil), (f.body, ""), (f.body, "zz")] {
             do {
-                _ = try razorpay.webhooks.verify(body, signature: signature)
+                _ = try razorpay.webhooks.verify(body, signature: signature).event
                 Issue.record("expected mismatch")
             } catch {
                 guard case .signatureMismatch(.webhook) = error else { Issue.record("got \(error)"); continue }
@@ -52,7 +54,7 @@ struct WebhookVerifyTests {
     @Test func validSignatureButBadBodyIsDecodingError() {
         for f in [WebhookFixtures.garbled, WebhookFixtures.missingEntity] {
             do {
-                _ = try razorpay.webhooks.verify(f.body, signature: f.signature)
+                _ = try razorpay.webhooks.verify(f.body, signature: f.signature).event
                 Issue.record("expected decoding error")
             } catch {
                 guard case .decoding = error else { Issue.record("got \(error)"); continue }
@@ -62,10 +64,10 @@ struct WebhookVerifyTests {
 
     @Test func nonUTF8BodyVerifiesThenFailsDecodingCleanly() {
         #expect(throws: RazorpayError.self) {
-            try razorpay.webhooks.verify(WebhookFixtures.nonUTF8, signature: WebhookFixtures.nonUTF8Signature)
+            try razorpay.webhooks.verify(WebhookFixtures.nonUTF8, signature: WebhookFixtures.nonUTF8Signature).event
         }
         #expect(throws: RazorpayError.self) {
-            try razorpay.webhooks.verify(WebhookFixtures.nonUTF8, signature: WebhookFixtures.captured.signature)
+            try razorpay.webhooks.verify(WebhookFixtures.nonUTF8, signature: WebhookFixtures.captured.signature).event
         }
     }
 

@@ -12,7 +12,7 @@
 | `client.payment.refund(paymentID: id, amount: 100, data: [:])` | `client.payments.refund(id, .partial(.inr(paise: 100)))` |
 | `client.order.all(queryParams: ["count": "100", "skip": "…"])` loops | `for try await o in client.orders.list()` |
 | `extraHeaders: ["X-Razorpay-Account": acc]` | `options: .init(accountID: acc)` |
-| `RazorpaySignature.verifyWebhook(body:signature:secret:)` → `Bool` | `try client.webhooks.verify(body, signature:)` → ``WebhookEvent`` |
+| `RazorpaySignature.verifyWebhook(body:signature:secret:)` → `Bool` | `try client.webhooks.verify(body, signature:)` → ``RazorpayWebhook`` (`.event` → ``WebhookEvent``) |
 | `RazorpaySignature.verifyPayment(orderID:paymentID:signature:secret:)` | `try client.verify(CheckoutResponse(...))` |
 | Endpoints without a typed API | `client.raw.send(.POST, "/v1/…", body: [...])` |
 
@@ -33,3 +33,12 @@ the typed API doesn't cover yet.
 - ``Currency`` is an open struct, so `switch` needs a `default`. `description` is now `displayName`.
   `convertToSmallestUnit` rounds half-up instead of truncating.
 - `extraHeaders` can no longer override `Authorization`, and no longer duplicates `Content-Type`.
+
+## beta.1 → beta.2: modular packages
+
+`RazorpayKit` is now an umbrella over `RazorpayCore`, `RazorpayVerification`, `RazorpayPayments`,
+`RazorpayOrders`, `RazorpayRefunds`, `RazorpayCustomers` and `RazorpayLegacy`. `import RazorpayKit`
+keeps working unchanged; depend on a single product (for example `RazorpayPayments`) for a smaller build.
+
+`webhooks.verify(_:signature:)` now returns the generic ``RazorpayWebhook`` envelope so every module can
+decode its own entity. Append `.event` to get the ``WebhookEvent`` enum you used in beta.1.
