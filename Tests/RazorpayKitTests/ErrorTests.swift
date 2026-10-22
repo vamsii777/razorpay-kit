@@ -1,7 +1,9 @@
 import XCTest
 import Foundation
 import NIOHTTP1
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 final class ErrorTests: XCTestCase {
     private func error(status: HTTPResponseStatus, body: String) async -> RazorpayError? {

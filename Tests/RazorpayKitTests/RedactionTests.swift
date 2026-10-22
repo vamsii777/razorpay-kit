@@ -1,7 +1,9 @@
 import AsyncHTTPClient
 import Foundation
 import Testing
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 // Placeholder credentials only; no network calls are made.
 @Suite("Secret redaction")

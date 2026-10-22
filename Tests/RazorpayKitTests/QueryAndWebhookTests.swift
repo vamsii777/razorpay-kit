@@ -1,6 +1,8 @@
 import XCTest
 import Foundation
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 final class QueryAndWebhookTests: XCTestCase {
     private func makeClient(_ mock: MockTransport) -> RazorpayClient {

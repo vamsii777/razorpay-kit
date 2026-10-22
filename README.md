@@ -30,7 +30,7 @@ let payment = try await razorpay.payments.capture(checkoutResponse.paymentID, am
 
 for try await refund in razorpay.payments.refunds(of: payment.id) { print(refund.status) }
 
-let event = try razorpay.webhooks.verify(rawBody, signature: signatureHeader)
+let event = try razorpay.webhooks.verify(rawBody, signature: signatureHeader).event
 if case .paymentCaptured(let captured) = event { fulfil(captured) }
 ```
 
@@ -48,7 +48,7 @@ app.razorpay = RazorpayClient(app.http.client.shared, key: keyID, secret: keySec
 app.on(.POST, "webhooks", "razorpay", body: .collect(maxSize: "1mb")) { req async throws -> HTTPStatus in
     guard let body = req.body.data else { throw Abort(.badRequest) }
     let event = try req.razorpay.webhooks.verify(body.readableBytesView,
-                                                 signature: req.headers.first(name: "X-Razorpay-Signature"))
+                                                 signature: req.headers.first(name: "X-Razorpay-Signature")).event
     if case .paymentCaptured(let payment) = event { try await fulfil(payment) }
     return .ok
 }

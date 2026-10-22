@@ -1,7 +1,9 @@
 import Foundation
 import NIOHTTP1
 import Testing
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 private struct Probe: Decodable, Sendable, Equatable { let id: String; let amount: Int }
 

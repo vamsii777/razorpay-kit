@@ -44,7 +44,7 @@ app.on(.POST, "webhooks", "razorpay", body: .collect(maxSize: "1mb")) { req asyn
     do {
         let event = try req.razorpay.webhooks.verify(
             body.readableBytesView,
-            signature: req.headers.first(name: "X-Razorpay-Signature"))
+            signature: req.headers.first(name: "X-Razorpay-Signature")).event
         switch event {
         case .paymentCaptured(let payment): try await fulfil(payment, on: req.db)
         case .refundProcessed(let refund):  req.logger.info("refund \(refund.id) processed")

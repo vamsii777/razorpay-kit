@@ -1,6 +1,8 @@
 import Foundation
 import NIOHTTP1
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 /// A transport that never touches the network. It records each request and returns canned
 /// responses. Keep this file identical in every test target.

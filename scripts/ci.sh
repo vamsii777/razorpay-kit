@@ -11,6 +11,7 @@ if [[ -n "${SWIFT_IMAGE:-}" ]]; then
 fi
 
 ./scripts/check-typed-throws.sh
+./scripts/check-manifests.sh
 swift --version
 # Swift 5.10: newer swift-system releases need a newer compiler; pin to 1.5.0.
 if swift --version 2>&1 | grep -q 'Swift version 5\.10'; then

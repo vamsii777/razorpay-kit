@@ -1,6 +1,8 @@
 import Foundation
 import Testing
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 // Fixtures are deliberately fake, low-entropy placeholders. Signatures were produced with
 // `printf %s "$payload" | openssl dgst -sha256 -hmac "$secret"`.

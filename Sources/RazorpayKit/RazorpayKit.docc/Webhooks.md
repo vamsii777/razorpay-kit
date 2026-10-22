@@ -7,7 +7,7 @@ Verify, then decode, in one call.
 Pass the **raw** request body and the `X-Razorpay-Signature` header:
 
 ```swift
-let event = try razorpay.webhooks.verify(rawBody, signature: headers["X-Razorpay-Signature"])
+let event = try razorpay.webhooks.verify(rawBody, signature: headers["X-Razorpay-Signature"]).event
 switch event {
 case .paymentCaptured(let payment): try await fulfil(payment)
 case .orderPaid(let order, let payment): markPaid(order.id, by: payment.id)

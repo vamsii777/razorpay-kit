@@ -1,7 +1,9 @@
 import XCTest
 import Foundation
 import NIOHTTP1
-@testable import RazorpayKit
+import RazorpayKit
+@testable import RazorpayCore
+@testable import RazorpayVerification
 
 final class TransportTests: XCTestCase {
     private func makeClient(_ mock: MockTransport) -> RazorpayClient {
